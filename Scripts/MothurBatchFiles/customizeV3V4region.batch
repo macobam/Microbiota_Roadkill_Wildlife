@@ -1,0 +1,26 @@
+#PROGRAM: customizeV3V4region.batch
+#OBJETIVE: Customize SILVA reference alignment for v3-v4 region information of 16S rRNA sequences
+#AUTHOR: Manuel Alejandro Coba-Males
+#DATE: 2023/11/06
+#VERSION: mothur v.1.45.0
+
+# Set data location with environmental varibles
+MOTHUR=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur
+CUSTOMIZEDSILVA=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/CustomizeV3V4_SILVA
+SILVAREFERENCE=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/SILVA_NR_v132
+
+# Specify the path to store the output files
+set.dir(output = $CUSTOMIZEDSILVA)
+
+# Trim the 16S sequence with the primers used in the amplification of the fragment
+pcr.seqs(fasta = $MOTHUR/ecoli16S_refseq.fasta, oligos = $MOTHUR/v3v4.oligos)
+
+# Rename the output file containing the fragment amplified by the primers in the 16S rRNA sequence of E. coli
+rename.file(input = $CUSTOMIZEDSILVA/ecoli16S_refseq.pcr.fasta, new = $CUSTOMIZEDSILVA/ecoli16s_customizev3v4.fasta)
+
+# Align the sequence of the v3v4 region with the reference file from the non-redundant SILVA v132 reference alignment
+align.seqs(fasta = $CUSTOMIZEDSILVA/ecoli16s_customizev3v4.fasta, reference = $SILVAREFERENCE/silva.nr_v132.align)
+summary.seqs(fasta = $CUSTOMIZEDSILVA/ecoli16s_customizev3v4.align)
+
+# Trim the non-redundant SILVA v132 reference alignment between positions 6428 and 23440, corresponding to the v3-v4 region of the 16S rRNA gene
+pcr.seqs(fasta = $SILVAREFERENCE/silva.nr_v132.align, start = 6428, end = 23440, keepdots = FALSE)

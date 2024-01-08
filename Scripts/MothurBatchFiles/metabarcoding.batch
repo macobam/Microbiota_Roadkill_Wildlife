@@ -1,0 +1,78 @@
+#PROGRAM: metabarcoding.batch
+#OBJETIVE: Analyze metabarcoding data of gut samples for Amphisbaena bassleri and Crotophaga ani
+#AUTHOR: Manuel Alejandro Coba-Males
+#DATE: 2023/11/06
+#VERSION: mothur v.1.45.0
+
+# Set data location with environmental varibles
+VSEARCH=/home/manuel.coba/Programs/mothur-1.45
+DATA=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Data
+ANALYSIS=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis
+CUSTOMIZEDSILVA=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/CustomizeV3V4_SILVA
+SILVAREFERENCE=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/SILVA_NR_v132
+
+# Pair the raw forward and reverse read files for each sample
+make.file(inputdir = $DATA, type = gz, prefix = roadkill, outputdir = $ANALYSIS)
+
+# Assemble contigs
+make.contigs(file = $ANALYSIS/roadkill.files, inputdir = $DATA)
+
+# Specify input and output directories for the files
+set.dir(input = $ANALYSIS, output = $ANALYSIS)
+
+# Summary of assembled contigs statistics for quality control
+summary.seqs(fasta = roadkill.trim.contigs.fasta)
+
+# Filtering of low-quality contigs (ambiguous bases, homopolymers, and length)
+screen.seqs(fasta = roadkill.trim.contigs.fasta, group = roadkill.contigs.groups, contigsreport = roadkill.contigs.report, minoverlap = 20, maxambig = 0, minlength = 350, maxlength = 580, maxhomop = 14)
+summary.seqs(fasta = roadkill.trim.contigs.good.fasta)
+
+# Grouping of unique sequences
+unique.seqs(fasta = roadkill.trim.contigs.good.fasta)
+count.seqs(name = roadkill.trim.contigs.good.names, group = roadkill.contigs.good.groups)
+summary.seqs(fasta = roadkill.trim.contigs.good.unique.fasta,count = roadkill.trim.contigs.good.count_table)
+
+# Alignment of sequences with the customize reference alignment
+align.seqs(fasta = roadkill.trim.contigs.good.unique.fasta, reference = $CUSTOMIZEDSILVA/customize_silva.nr_v132.align, flip = t, outputdir = $ANALYSIS, processors = 64)
+
+# Refinement of the alignment
+summary.seqs(fasta = roadkill.trim.contigs.good.unique.align, count = roadkill.trim.contigs.good.count_table)
+screen.seqs(fasta = roadkill.trim.contigs.good.unique.align, count = roadkill.trim.contigs.good.count_table, summary = roadkill.trim.contigs.good.unique.summary, start = 2, end = 17012)
+
+# Filtering of sequences and grouping into unique sequences
+summary.seqs(fasta = roadkill.trim.contigs.good.unique.good.align, count = roadkill.trim.contigs.good.good.count_table)
+filter.seqs(fasta = roadkill.trim.contigs.good.unique.good.align, vertical = T, trump = .)
+unique.seqs(fasta = roadkill.trim.contigs.good.unique.good.filter.fasta, count = roadkill.trim.contigs.good.good.count_table)
+summary.seqs(fasta = roadkill.trim.contigs.good.unique.good.filter.unique.fasta, count = roadkill.trim.contigs.good.unique.good.filter.count_table)
+
+# Pre-clustering
+pre.cluster(fasta = roadkill.trim.contigs.good.unique.good.filter.unique.fasta, count = roadkill.trim.contigs.good.unique.good.filter.count_table, diffs = 1)
+summary.seqs(fasta = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.fasta, count = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.count_table)
+
+# Removal of chimeric sequences due to amplification-sequencing errors
+chimera.vsearch(vsearch = $VSEARCH/vsearch, fasta = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.fasta, count = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.count_table,dereplicate = t)
+remove.seqs(fasta = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.fasta, accnos = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.accnos)
+summary.seqs(fasta = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.fasta, count = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.count_table)
+
+# Taxonomic classification
+classify.seqs(fasta = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.fasta, count = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.count_table, reference = $CUSTOMIZEDSILVA/customize_silva.nr_v132.align, taxonomy = $SILVAREFERENCE/silva.nr_v132.tax, cutoff = 70)
+
+# Removal of non-bacterial taxa
+remove.lineage(fasta = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.fasta, count = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.count_table, taxonomy = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.nr_v132.wang.taxonomy, taxon = Chloroplast-Mitochondria-Eukaryota)
+summary.seqs(fasta = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta, count = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table)
+summary.tax(taxonomy = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.nr_v132.wang.pick.taxonomy, count = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table)
+
+# Classification based on OTUs (Operational Taxonomic Units)
+# Calculation of a distance matrix
+dist.seqs(fasta = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta, cutoff = 0.01, processors = 64)
+# Clustering of OTUs
+cluster(column = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.dist, count = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table, cutoff = 0.01)
+
+# Generation of an OTU table
+make.shared(list = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.list, count = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table,label = 0.01)
+
+# Taxonomic classification of OTUs
+classify.otu(list = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.list, count = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table, taxonomy = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.nr_v132.wang.pick.taxonomy, label = 0.01, basis = sequence)
+
+# Retrieval of representative sequences for OTUs
+get.oturep(list = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.list,fasta = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta,count = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table, method = abundance)
