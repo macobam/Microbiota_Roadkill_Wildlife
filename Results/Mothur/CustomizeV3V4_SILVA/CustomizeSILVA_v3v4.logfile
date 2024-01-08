@@ -1,0 +1,78 @@
+Mothur's directories:
+outputDir=/home/manuel.coba/Microbiota_RoadkillWildlife/Results/Mothur/CustomizeV3V4_SILVA/
+
+mothur > pcr.seqs(fasta = /home/manuel.coba/Microbiota_RoadkillWildlife/Results/Mothur/ecoli16S_refseq.fasta, oligos = /home/manuel.coba/Microbiota_RoadkillWildlife/Results/Mothur/v3v4.oligos)
+
+Using 256 processors.
+[NOTE]: no sequences were bad, removing /home/manuel.coba/Microbiota_RoadkillWildlife/Results/Mothur/CustomizeV3V4_SILVA/ecoli16S_refseq.bad.accnos
+
+It took 0 secs to screen 1 sequences.
+
+Output File Names: 
+/home/manuel.coba/Microbiota_RoadkillWildlife/Results/Mothur/CustomizeV3V4_SILVA/ecoli16S_refseq.pcr.fasta
+
+
+
+mothur > rename.file(input = /home/manuel.coba/Microbiota_RoadkillWildlife/Results/Mothur/CustomizeV3V4_SILVA/ecoli16S_refseq.pcr.fasta, new = /home/manuel.coba/Microbiota_RoadkillWildlife/Results/Mothur/CustomizeV3V4_SILVA/ecoli16s_customizev3v4.fasta)
+
+Current files saved by mothur:
+fasta=/home/manuel.coba/Microbiota_RoadkillWildlife/Results/Mothur/CustomizeV3V4_SILVA/ecoli16S_refseq.pcr.fasta
+oligos=/home/manuel.coba/Microbiota_RoadkillWildlife/Results/Mothur/v3v4.oligos
+processors=256
+
+mothur > align.seqs(fasta = /home/manuel.coba/Microbiota_RoadkillWildlife/Results/Mothur/CustomizeV3V4_SILVA/ecoli16s_customizev3v4.fasta, reference = /home/manuel.coba/Microbiota_RoadkillWildlife/Results/Mothur/SILVA_NR_v132/silva.nr_v132.align)
+
+Using 256 processors.
+
+Reading in the /home/manuel.coba/Microbiota_RoadkillWildlife/Results/Mothur/SILVA_NR_v132/silva.nr_v132.align template sequences...	DONE.
+It took 207 to read  213119 sequences.
+
+Aligning sequences from /home/manuel.coba/Microbiota_RoadkillWildlife/Results/Mothur/CustomizeV3V4_SILVA/ecoli16s_customizev3v4.fasta ...
+It took 0 secs to align 1 sequences.
+
+
+It took 1 seconds to align 1 sequences.
+
+Output File Names: 
+/home/manuel.coba/Microbiota_RoadkillWildlife/Results/Mothur/CustomizeV3V4_SILVA/ecoli16s_customizev3v4.align
+/home/manuel.coba/Microbiota_RoadkillWildlife/Results/Mothur/CustomizeV3V4_SILVA/ecoli16s_customizev3v4.align.report
+
+
+mothur > summary.seqs(fasta = /home/manuel.coba/Microbiota_RoadkillWildlife/Results/Mothur/CustomizeV3V4_SILVA/ecoli16s_customizev3v4.align)
+
+Using 256 processors.
+
+		Start	End	NBases	Ambigs	Polymer	NumSeqs
+Minimum:	6428	23440	427	1	6	1
+2.5%-tile:	6428	23440	427	1	6	1
+25%-tile:	6428	23440	427	1	6	1
+Median: 	6428	23440	427	1	6	1
+75%-tile:	6428	23440	427	1	6	1
+97.5%-tile:	6428	23440	427	1	6	1
+Maximum:	6428	23440	427	1	6	1
+Mean:	6428	23440	427	1	6
+# of Seqs:	1
+
+It took 0 secs to summarize 1 sequences.
+
+Output File Names:
+/home/manuel.coba/Microbiota_RoadkillWildlife/Results/Mothur/CustomizeV3V4_SILVA/ecoli16s_customizev3v4.summary
+
+
+mothur > pcr.seqs(fasta = /home/manuel.coba/Microbiota_RoadkillWildlife/Results/Mothur/SILVA_NR_v132/silva.nr_v132.align, start = 6428, end = 23440, keepdots = FALSE)
+
+Using 256 processors.
+[NOTE]: no sequences were bad, removing /home/manuel.coba/Microbiota_RoadkillWildlife/Results/Mothur/CustomizeV3V4_SILVA/silva.nr_v132.bad.accnos
+
+It took 20 secs to screen 213119 sequences.
+
+Output File Names: 
+/home/manuel.coba/Microbiota_RoadkillWildlife/Results/Mothur/CustomizeV3V4_SILVA/silva.nr_v132.pcr.align
+
+
+
+mothur > quit()
+
+
+It took 317 seconds to run 7 commands from /home/manuel.coba/Microbiota_RoadkillWildlife/Scripts/MothurBatchFiles/customizeV3V4region.batch batch file.
+

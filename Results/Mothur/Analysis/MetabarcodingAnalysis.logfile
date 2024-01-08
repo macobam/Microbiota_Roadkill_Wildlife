@@ -1,0 +1,924 @@
+Setting output directory to: /home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/
+Setting input directory to: /home/manuel.coba/Microbiota_Roadkill_Wildlife/Data/
+
+Output File Names: 
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.files
+
+
+mothur > make.contigs(file = /home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.files, inputdir = /home/manuel.coba/Microbiota_Roadkill_Wildlife/Data)
+Setting input directory to: /home/manuel.coba/Microbiota_Roadkill_Wildlife/Data/
+
+Using 256 processors.
+
+>>>>>	Processing file pair /home/manuel.coba/Microbiota_Roadkill_Wildlife/Data/SW002_R1.fastq.gz - /home/manuel.coba/Microbiota_Roadkill_Wildlife/Data/SW002_R2.fastq.gz (files 2 of 9)	<<<<<
+
+>>>>>	Processing file pair /home/manuel.coba/Microbiota_Roadkill_Wildlife/Data/SW003_R1.fastq.gz - /home/manuel.coba/Microbiota_Roadkill_Wildlife/Data/SW003_R2.fastq.gz (files 3 of 9)	<<<<<
+
+>>>>>	Processing file pair /home/manuel.coba/Microbiota_Roadkill_Wildlife/Data/SW004_R1.fastq.gz - /home/manuel.coba/Microbiota_Roadkill_Wildlife/Data/SW004_R2.fastq.gz (files 4 of 9)	<<<<<
+
+>>>>>	Processing file pair /home/manuel.coba/Microbiota_Roadkill_Wildlife/Data/SW005_R1.fastq.gz - /home/manuel.coba/Microbiota_Roadkill_Wildlife/Data/SW005_R2.fastq.gz (files 5 of 9)	<<<<<
+
+>>>>>	Processing file pair /home/manuel.coba/Microbiota_Roadkill_Wildlife/Data/SW006_R1.fastq.gz - /home/manuel.coba/Microbiota_Roadkill_Wildlife/Data/SW006_R2.fastq.gz (files 6 of 9)	<<<<<
+
+>>>>>	Processing file pair /home/manuel.coba/Microbiota_Roadkill_Wildlife/Data/SW007_R1.fastq.gz - /home/manuel.coba/Microbiota_Roadkill_Wildlife/Data/SW007_R2.fastq.gz (files 7 of 9)	<<<<<
+Making contigs...
+Making contigs...
+
+>>>>>	Processing file pair /home/manuel.coba/Microbiota_Roadkill_Wildlife/Data/SW009_R1.fastq.gz - /home/manuel.coba/Microbiota_Roadkill_Wildlife/Data/SW009_R2.fastq.gz (files 9 of 9)	<<<<<
+
+>>>>>	Processing file pair /home/manuel.coba/Microbiota_Roadkill_Wildlife/Data/SW001_R1.fastq.gz - /home/manuel.coba/Microbiota_Roadkill_Wildlife/Data/SW001_R2.fastq.gz (files 1 of 9)	<<<<<
+
+>>>>>	Processing file pair /home/manuel.coba/Microbiota_Roadkill_Wildlife/Data/SW008_R1.fastq.gz - /home/manuel.coba/Microbiota_Roadkill_Wildlife/Data/SW008_R2.fastq.gz (files 8 of 9)	<<<<<
+Making contigs...
+Making contigs...
+Making contigs...
+Making contigs...
+Making contigs...
+Making contigs...
+Making contigs...
+Done.
+
+It took 23 secs to assemble 34769 reads.
+
+Done.
+
+It took 45 secs to assemble 60913 reads.
+
+Done.
+
+It took 57 secs to assemble 76568 reads.
+
+Done.
+
+It took 80 secs to assemble 121331 reads.
+
+Done.
+
+It took 87 secs to assemble 119056 reads.
+
+Done.
+
+It took 87 secs to assemble 124324 reads.
+
+Done.
+
+It took 99 secs to assemble 134416 reads.
+
+Done.
+
+It took 125 secs to assemble 170215 reads.
+
+Done.
+
+It took 191 secs to assemble 259125 reads.
+
+
+Group count: 
+SW001	76568
+SW002	134416
+SW003	34769
+SW004	121331
+SW005	259125
+SW006	124324
+SW007	119056
+SW008	170215
+SW009	60913
+
+Total of all groups is 1100717
+
+It took 192 secs to process 1100717 sequences.
+
+Output File Names: 
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.fasta
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.scrap.contigs.fasta
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.contigs.report
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.contigs.groups
+
+
+mothur > set.dir(input = /home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis, output = /home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis)
+Mothur's directories:
+outputDir=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/
+inputDir=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/
+
+mothur > summary.seqs(fasta = roadkill.trim.contigs.fasta)
+
+Using 256 processors.
+
+		Start	End	NBases	Ambigs	Polymer	NumSeqs
+Minimum:	1	35	35	0	3	1
+2.5%-tile:	1	101	101	0	4	27518
+25%-tile:	1	440	440	0	5	275180
+Median: 	1	440	440	0	5	550359
+75%-tile:	1	465	465	1	6	825538
+97.5%-tile:	1	515	515	35	35	1073200
+Maximum:	1	542	542	278	261	1100717
+Mean:	1	431	431	1	6
+# of Seqs:	1100717
+
+It took 5 secs to summarize 1100717 sequences.
+
+Output File Names:
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.summary
+
+
+mothur > screen.seqs(fasta = roadkill.trim.contigs.fasta, group = roadkill.contigs.groups, contigsreport = roadkill.contigs.report, minoverlap = 20, maxambig = 0, minlength = 350, maxlength = 580, maxhomop = 14)
+
+Using 256 processors.
+
+It took 5 secs to screen 1100717 sequences, removed 347861.
+
+/******************************************/
+Running command: remove.seqs(accnos=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.bad.accnos.temp, group=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.contigs.groups)
+Removed 347861 sequences from your group file.
+
+Output File Names:
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.contigs.pick.groups
+
+/******************************************/
+
+Output File Names:
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.contigs.good.contigs.report
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.fasta
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.bad.accnos
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.contigs.good.groups
+
+
+It took 15 secs to screen 1100717 sequences.
+
+mothur > summary.seqs(fasta = roadkill.trim.contigs.good.fasta)
+
+Using 256 processors.
+
+		Start	End	NBases	Ambigs	Polymer	NumSeqs
+Minimum:	1	350	350	0	3	1
+2.5%-tile:	1	439	439	0	4	18822
+25%-tile:	1	440	440	0	5	188215
+Median: 	1	441	441	0	5	376429
+75%-tile:	1	465	465	0	6	564643
+97.5%-tile:	1	515	515	0	6	734035
+Maximum:	1	525	525	0	14	752856
+Mean:	1	451	451	0	5
+# of Seqs:	752856
+
+It took 3 secs to summarize 752856 sequences.
+
+Output File Names:
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.summary
+
+
+mothur > unique.seqs(fasta = roadkill.trim.contigs.good.fasta)
+752856	309872
+
+Output File Names: 
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.names
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.fasta
+
+
+mothur > count.seqs(name = roadkill.trim.contigs.good.names, group = roadkill.contigs.good.groups)
+
+It took 4 secs to create a table for 752856 sequences.
+
+Total number of sequences: 752856
+
+Output File Names: 
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.count_table
+
+
+mothur > summary.seqs(fasta = roadkill.trim.contigs.good.unique.fasta,count = roadkill.trim.contigs.good.count_table)
+
+Using 256 processors.
+
+		Start	End	NBases	Ambigs	Polymer	NumSeqs
+Minimum:	1	350	350	0	3	1
+2.5%-tile:	1	439	439	0	4	18822
+25%-tile:	1	440	440	0	5	188215
+Median: 	1	441	441	0	5	376429
+75%-tile:	1	465	465	0	6	564643
+97.5%-tile:	1	515	515	0	6	734035
+Maximum:	1	525	525	0	14	752856
+Mean:	1	451	451	0	5
+# of unique seqs:	309872
+total # of seqs:	752856
+
+It took 37 secs to summarize 752856 sequences.
+
+Output File Names:
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.summary
+
+
+mothur > align.seqs(fasta = roadkill.trim.contigs.good.unique.fasta, reference = /home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/CustomizeV3V4_SILVA/customize_silva.nr_v132.align, flip = t, outputdir = /home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis, processors = 64)
+Setting output directory to: /home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/
+
+Using 64 processors.
+
+Reading in the /home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/CustomizeV3V4_SILVA/customize_silva.nr_v132.align template sequences...	DONE.
+It took 74 to read  213119 sequences.
+
+Aligning sequences from /home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.fasta ...
+It took 355 secs to align 309872 sequences.
+
+[WARNING]: 40352 of your sequences generated alignments that eliminated too many bases, a list is provided in /home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.flip.accnos.
+[NOTE]: 26547 of your sequences were reversed to produce a better alignment.
+
+It took 356 seconds to align 309872 sequences.
+
+Output File Names: 
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.align
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.align.report
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.flip.accnos
+
+
+mothur > summary.seqs(fasta = roadkill.trim.contigs.good.unique.align, count = roadkill.trim.contigs.good.count_table)
+
+Using 64 processors.
+
+		Start	End	NBases	Ambigs	Polymer	NumSeqs
+Minimum:	0	0	0	0	1	1
+2.5%-tile:	2	17012	2	0	1	18822
+25%-tile:	2	17012	401	0	5	188215
+Median: 	2	17012	401	0	5	376429
+75%-tile:	2	17012	426	0	5	564643
+97.5%-tile:	16159	17012	426	0	6	734035
+Maximum:	17012	17012	491	0	14	752856
+Mean:	869	16805	383	0	4
+# of unique seqs:	309872
+total # of seqs:	752856
+
+It took 14 secs to summarize 752856 sequences.
+
+Output File Names:
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.summary
+
+
+mothur > screen.seqs(fasta = roadkill.trim.contigs.good.unique.align, count = roadkill.trim.contigs.good.count_table, summary = roadkill.trim.contigs.good.unique.summary, start = 2, end = 17012)
+
+Using 64 processors.
+
+It took 12 secs to screen 309872 sequences, removed 40612.
+
+/******************************************/
+Running command: remove.seqs(accnos=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.bad.accnos.temp, count=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.count_table)
+Removed 49065 sequences from your count file.
+
+Output File Names:
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.pick.count_table
+
+/******************************************/
+
+Output File Names:
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.summary
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.align
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.bad.accnos
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.good.count_table
+
+
+It took 18 secs to screen 309872 sequences.
+
+mothur > summary.seqs(fasta = roadkill.trim.contigs.good.unique.good.align, count = roadkill.trim.contigs.good.good.count_table)
+
+Using 64 processors.
+
+		Start	End	NBases	Ambigs	Polymer	NumSeqs
+Minimum:	2	17012	385	0	3	1
+2.5%-tile:	2	17012	400	0	4	17595
+25%-tile:	2	17012	401	0	5	175948
+Median: 	2	17012	401	0	5	351896
+75%-tile:	2	17012	426	0	5	527844
+97.5%-tile:	2	17012	426	0	6	686197
+Maximum:	2	17012	491	0	14	703791
+Mean:	2	17012	409	0	5
+# of unique seqs:	269260
+total # of seqs:	703791
+
+It took 12 secs to summarize 703791 sequences.
+
+Output File Names:
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.summary
+
+
+mothur > filter.seqs(fasta = roadkill.trim.contigs.good.unique.good.align, vertical = T, trump = .)
+
+Using 64 processors.
+Creating Filter...
+It took 5 secs to create filter for 269260 sequences.
+
+
+Running Filter...
+It took 4 secs to filter 269260 sequences.
+
+
+
+Length of filtered alignment: 1035
+Number of columns removed: 15977
+Length of the original alignment: 17012
+Number of sequences used to construct filter: 269260
+
+Output File Names: 
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.filter
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.fasta
+
+
+mothur > unique.seqs(fasta = roadkill.trim.contigs.good.unique.good.filter.fasta, count = roadkill.trim.contigs.good.good.count_table)
+269260	153024
+
+Output File Names: 
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.count_table
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.fasta
+
+
+mothur > summary.seqs(fasta = roadkill.trim.contigs.good.unique.good.filter.unique.fasta, count = roadkill.trim.contigs.good.unique.good.filter.count_table)
+
+Using 64 processors.
+
+		Start	End	NBases	Ambigs	Polymer	NumSeqs
+Minimum:	1	1035	385	0	3	1
+2.5%-tile:	1	1035	400	0	4	17595
+25%-tile:	1	1035	401	0	5	175948
+Median: 	1	1035	401	0	5	351896
+75%-tile:	1	1035	426	0	5	527844
+97.5%-tile:	1	1035	426	0	6	686197
+Maximum:	1	1035	491	0	14	703791
+Mean:	1	1035	409	0	5
+# of unique seqs:	153024
+total # of seqs:	703791
+
+It took 5 secs to summarize 703791 sequences.
+
+Output File Names:
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.summary
+
+
+mothur > pre.cluster(fasta = roadkill.trim.contigs.good.unique.good.filter.unique.fasta, count = roadkill.trim.contigs.good.unique.good.filter.count_table, diffs = 1)
+
+Using 64 processors.
+
+/******************************************/
+Running command: split.groups(groups=SW001-SW002-SW003-SW004-SW005-SW006-SW007-SW008-SW009, fasta=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.fasta, count=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.count_table)
+
+Using 64 processors.
+Reducing processors to 9.
+/******************************************/
+Running command: get.seqs(dups=f, accnos=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.SW001.count_table.accnos, fasta=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.fastaSW001)
+/******************************************/
+Running command: get.seqs(dups=f, accnos=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.SW003.count_table.accnos, fasta=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.fastaSW003)
+/******************************************/
+/******************************************/
+Running command: get.seqs(dups=f, accnos=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.SW006.count_table.accnos, fasta=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.fastaSW006)
+igs...
+Making contigs...
+Making contigs...
+Making contigs...
+Making contigs...
+Making contigs...
+Done.
+
+It took 23 secs to assemble 34769 reads.
+
+Done.
+
+It took 45 secs to assemble 60913 reads.
+
+Done.
+
+It took 57 secs to assemble 76568 reads.
+
+Done.
+
+It took 80 secs to assemble 121331 reads.
+
+Done.
+
+It took 87 secs to assemb/******************************************/
+Running command: get.seqs(dups=f, accnos=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.SW008.count_table.accnos, fasta=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.fastaSW008)
+/******************************************/
+Running command: get.seqs(dups=f, accnos=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.SW002.count_table.accnos, fasta=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.fastaSW002)
+/******************************************/
+Running command: get.seqs(dups=f, accnos=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.SW009.count_table.accnos, fasta=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.fastaSW009)
+/******************************************/
+Running command: get.seqs(dups=f, accnos=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.SW005.count_table.accnos, fasta=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.fastaSW005)
+/******************************************/
+Running command: get.seqs(dups=f, accnos=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.SW007.count_table.accnos, fasta=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.fastaSW007)
+Selected 7814 sequences from your fasta file.
+
+Output File Names:
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.pick.fastaSW003
+
+/******************************************/
+Done.
+Selected 17013 sequences from your fasta file.
+
+Output File Names:
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.pick.fastaSW001
+
+Selected 7941 sequences from your fasta file.
+
+Output File Names:
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.pick.fastaSW004
+
+/******************************************/
+Done.
+/******************************************/
+Done.
+Selected 13087 sequences from your fasta file.
+
+Output File Names:
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.pick.fastaSW009
+
+Selected 14830 sequences from your fasta file.
+
+Output File Names:
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.pick.fastaSW006
+
+/******************************************/
+Done.
+/******************************************/
+Done.
+Selected 28909 sequences from your fasta file.
+
+Output File Names:
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.pick.fastaSW008
+
+/******************************************/
+Done.
+Selected 35189 sequences from your fasta file.
+
+Output File Names:
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.pick.fastaSW005
+
+/******************************************/
+Done.
+Selected 15442 sequences from your fasta file.
+
+Output File Names:
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.pick.fastaSW002
+
+/******************************************/
+Done.
+Selected 24356 sequences from your fasta file.
+
+Output File Names:
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.pick.fastaSW007
+
+/******************************************/
+Done.
+
+Output File Names: 
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.SW001.count_table
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.SW001.fasta
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.SW002.count_table
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.SW002.fasta
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.SW003.count_table
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.SW003.fasta
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.SW004.count_table
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.SW004.fasta
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.SW005.count_table
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.SW005.fasta
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.SW006.count_table
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.SW006.fasta
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.SW007.count_table
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.SW007.fasta
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.SW008.count_table
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.SW008.fasta
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.SW009.count_table
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.SW009.fasta
+
+/******************************************/
+Reducing processors to 9.
+
+Processing group SW002:
+
+Processing group SW003:
+
+Processing group SW004:
+
+Processing group SW005:
+
+Processing group SW006:
+
+Processing group SW007:
+
+Processing group SW008:
+
+Processing group SW009:
+
+Processing group SW001:
+SW004	7941	4087	3854
+Total number of sequences before pre.cluster was 7941.
+pre.cluster removed 3854 sequences.
+
+It took 1 secs to cluster 7941 sequences.
+SW003	7814	4814	3000
+Total number of sequences before pre.cluster was 7814.
+pre.cluster removed 3000 sequences.
+
+It took 1 secs to cluster 7814 sequences.
+SW009	13087	7570	5517
+Total number of sequences before pre.cluster was 13087.
+pre.cluster removed 5517 sequences.
+
+It took 2 secs to cluster 13087 sequences.
+SW002	15442	9822	5620
+Total number of sequences before pre.cluster was 15442.
+pre.cluster removed 5620 sequences.
+
+It took 3 secs to cluster 15442 sequences.
+SW006	14830	12737	2093
+Total number of sequences before pre.cluster was 14830.
+pre.cluster removed 2093 sequences.
+
+It took 4 secs to cluster 14830 sequences.
+SW001	17013	10880	6133
+Total number of sequences before pre.cluster was 17013.
+pre.cluster removed 6133 sequences.
+
+It took 5 secs to cluster 17013 sequences.
+SW007	24356	15826	8530
+Total number of sequences before pre.cluster was 24356.
+pre.cluster removed 8530 sequences.
+
+It took 7 secs to cluster 24356 sequences.
+SW008	28909	18189	10720
+Total number of sequences before pre.cluster was 28909.
+pre.cluster removed 10720 sequences.
+
+It took 9 secs to cluster 28909 sequences.
+SW005	35189	23334	11855
+Total number of sequences before pre.cluster was 35189.
+pre.cluster removed 11855 sequences.
+
+It took 15 secs to cluster 35189 sequences.
+
+Deconvoluting count table results...
+It took 1 secs to merge 107259 sequences group data.
+/******************************************/
+Running command: get.seqs(fasta=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.fasta, accnos=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.count_table.temp)
+Selected 105696 sequences from your fasta file.
+
+Output File Names:
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.pick.fasta
+
+/******************************************/
+It took 29 secs to run pre.cluster.
+
+Using 64 processors.
+
+Output File Names: 
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.fasta
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.count_table
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.SW001.map
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.SW002.map
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.SW003.map
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.SW004.map
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.SW005.map
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.SW006.map
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.SW007.map
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.SW008.map
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.SW009.map
+
+
+mothur > summary.seqs(fasta = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.fasta, count = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.count_table)
+
+Using 64 processors.
+
+		Start	End	NBases	Ambigs	Polymer	NumSeqs
+Minimum:	1	1035	385	0	3	1
+2.5%-tile:	1	1035	400	0	4	17595
+25%-tile:	1	1035	401	0	5	175948
+Median: 	1	1035	401	0	5	351896
+75%-tile:	1	1035	426	0	5	527844
+97.5%-tile:	1	1035	426	0	6	686197
+Maximum:	1	1035	491	0	14	703791
+Mean:	1	1035	409	0	5
+# of unique seqs:	105696
+total # of seqs:	703791
+
+It took 3 secs to summarize 703791 sequences.
+
+Output File Names:
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.summary
+
+
+mothur > chimera.vsearch(vsearch = /home/manuel.coba/Programs/mothur-1.45/vsearch, fasta = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.fasta, count = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.count_table,dereplicate = t)
+
+Using 64 processors.
+Checking sequences from /home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.fasta ...
+
+/******************************************/
+Running command: split.groups(groups=SW001-SW002-SW003-SW004-SW005-SW006-SW007-SW008-SW009, fasta=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.fasta, count=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.count_table)
+
+Using 64 processors.
+Reducing processors to 9.
+/******************************************/
+Running command: get.seqs(dups=f, accnos=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.SW001.count_table.accnos, fasta=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.fastaSW001)
+/******************************************/
+Running command: get.seqs(dups=f, accnos=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.SW002.count_table.accnos, fasta=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.fastaSW002)
+/******************************************/
+Running command: get.seqs(dups=f, accnos=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.SW009.count_table.accnos, fasta=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.fastaSW009)
+/******************************************/
+Running command: get.seqs(dups=f, accnos=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.SW004.count_table.accnos, fasta=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.fastaSW004)
+/******************************************/
+Running command: get.seqs(dups=f, accnos=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.SW006.count_table.accnos, fasta=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.fastaSW006)
+/******************************************/
+Running command: get.seqs(dups=f, accnos=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.SW007.count_table.accnos, fasta=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.fastaSW007)
+/******************************************/
+Running command: get.seqs(dups=f, accnos=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.SW003.count_table.accnos, fasta=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.fastaSW003)
+/******************************************/
+Running command: get.seqs(dups=f, accnos=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.SW005.count_table.accnos, fasta=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.fastaSW005)
+/******************************************/
+Running command: get.seqs(dups=f, accnos=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.SW008.count_table.accnos, fasta=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.fastaSW008)
+Selected 4087 sequences from your fasta file.
+
+Output File Names:
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.fastaSW004
+
+/******************************************/
+Done.
+Selected 9822 sequences from your fasta file.
+
+Output File Names:
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.fastaSW002
+
+/******************************************/
+Done.
+Selected 7570 sequences from your fasta file.
+
+Output File Names:
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.fastaSW009
+
+/******************************************/
+Done.
+Selected 4814 sequences from your fasta file.
+
+Output File Names:
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.fastaSW003
+
+Selected 12737 sequences from your fasta file.
+
+Output File Names:
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.fastaSW006
+
+/******************************************/
+Done.
+/******************************************/
+Done.
+Selected 23334 sequences from your fasta file.
+Selected 10880 sequences from your fasta file.
+
+Output File Names:
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.fastaSW001
+
+
+Output File Names:
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.fastaSW005
+
+Selected 18189 sequences from your fasta file.
+
+Output File Names:
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.fastaSW008
+
+/******************************************/
+Done.
+/******************************************/
+Done.
+/******************************************/
+Done.
+Selected 15826 sequences from your fasta file.
+
+Output File Names:
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.fastaSW007
+
+/******************************************/
+Done.
+
+Output File Names: 
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.SW001.count_table
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.SW001.fasta
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.SW002.count_table
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.SW002.fasta
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.SW003.count_table
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.SW003.fasta
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.SW004.count_table
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.SW004.fasta
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.SW005.count_table
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.SW005.fasta
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.SW006.count_table
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.SW006.fasta
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.SW007.count_table
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.SW007.fasta
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.SW008.count_table
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.SW008.fasta
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.SW009.count_table
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.SW009.fasta
+
+/******************************************/
+Reducing processors to 9.
+
+It took 6 secs to check 4087 sequences from group SW004.
+
+It took 7 secs to check 4814 sequences from group SW003.
+
+It took 12 secs to check 7570 sequences from group SW009.
+
+It took 14 secs to check 9822 sequences from group SW002.
+
+It took 17 secs to check 10880 sequences from group SW001.
+
+It took 24 secs to check 12737 sequences from group SW006.
+
+It took 25 secs to check 15826 sequences from group SW007.
+
+It took 31 secs to check 18189 sequences from group SW008.
+
+It took 44 secs to check 23334 sequences from group SW005.
+It took 44 secs to check 107259 sequences.
+
+
+Output File Names:
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.count_table
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.chimeras
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.accnos
+
+
+mothur > remove.seqs(fasta = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.fasta, accnos = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.accnos)
+[WARNING]: This command can take a namefile and you did not provide one. The current namefile is /home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.names which seems to match /home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.fasta.
+Removed 4205 sequences from your fasta file.
+
+Output File Names:
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.fasta
+
+
+mothur > summary.seqs(fasta = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.fasta, count = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.count_table)
+
+Using 64 processors.
+
+		Start	End	NBases	Ambigs	Polymer	NumSeqs
+Minimum:	1	1035	385	0	3	1
+2.5%-tile:	1	1035	400	0	4	17413
+25%-tile:	1	1035	401	0	5	174128
+Median: 	1	1035	401	0	5	348255
+75%-tile:	1	1035	426	0	5	522382
+97.5%-tile:	1	1035	426	0	6	679097
+Maximum:	1	1035	491	0	14	696509
+Mean:	1	1035	409	0	5
+# of unique seqs:	101491
+total # of seqs:	696509
+
+It took 3 secs to summarize 696509 sequences.
+
+Output File Names:
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.summary
+
+
+mothur > classify.seqs(fasta = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.fasta, count = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.count_table, reference = /home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/CustomizeV3V4_SILVA/customize_silva.nr_v132.align, taxonomy = /home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/SILVA_NR_v132/silva.nr_v132.tax, cutoff = 70)
+
+Using 64 processors.
+Reading template taxonomy...     DONE.
+Reading template probabilities...     DONE.
+It took 6 seconds get probabilities.
+Classifying sequences from /home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.fasta ...
+[WARNING]: M05256_127_000000000-L8D4T_1_1115_29416_10893 could not be classified. You can use the remove.lineage command with taxon=unknown; to remove such sequences.
+[WARNING]: M05256_127_000000000-L8D4T_1_2103_29035_11124 could not be classified. You can use the remove.lineage command with taxon=unknown; to remove such sequences.
+[WARNING]: M05256_127_000000000-L8D4T_1_1101_26433_21823 could not be classified. You can use the remove.lineage command with taxon=unknown; to remove such sequences.
+[WARNING]: M05256_127_000000000-L8D4T_1_1116_29336_16204 could not be classified. You can use the remove.lineage command with taxon=unknown; to remove such sequences.
+[WARNING]: M05256_127_000000000-L8D4T_1_1105_16485_1428 could not be classified. You can use the remove.lineage command with taxon=unknown; to remove such sequences.
+[WARNING]: M05256_127_000000000-L8D4T_1_1102_26806_21308 could not be classified. You can use the remove.lineage command with taxon=unknown; to remove such sequences.
+[WARNING]: M05256_127_000000000-L8D4T_1_1103_15514_2221 could not be classified. You can use the remove.lineage command with taxon=unknown; to remove such sequences.
+[WARNING]: M05256_127_000000000-L8D4T_1_1104_26730_5243 could not be classified. You can use the remove.lineage command with taxon=unknown; to remove such sequences.
+
+It took 409 secs to classify 101491 sequences.
+
+
+It took 2 secs to create the summary file for 101491 sequences.
+
+
+Output File Names: 
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.nr_v132.wang.taxonomy
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.nr_v132.wang.tax.summary
+
+
+mothur > remove.lineage(fasta = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.fasta, count = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.count_table, taxonomy = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.nr_v132.wang.taxonomy, taxon = Chloroplast-Mitochondria-Eukaryota)
+
+/******************************************/
+Running command: remove.seqs(accnos=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.nr_v132.wang.accnos, count=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.count_table, fasta=/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.fasta)
+Removed 114 sequences from your fasta file.
+Removed 539 sequences from your count file.
+
+Output File Names:
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table
+
+/******************************************/
+
+Output File Names:
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.nr_v132.wang.pick.taxonomy
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.nr_v132.wang.accnos
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta
+
+
+mothur > summary.seqs(fasta = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta, count = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table)
+
+Using 64 processors.
+
+		Start	End	NBases	Ambigs	Polymer	NumSeqs
+Minimum:	1	1035	385	0	3	1
+2.5%-tile:	1	1035	400	0	4	17400
+25%-tile:	1	1035	401	0	5	173993
+Median: 	1	1035	401	0	5	347986
+75%-tile:	1	1035	426	0	5	521978
+97.5%-tile:	1	1035	426	0	6	678571
+Maximum:	1	1035	491	0	14	695970
+Mean:	1	1035	409	0	5
+# of unique seqs:	101377
+total # of seqs:	695970
+
+It took 4 secs to summarize 695970 sequences.
+
+Output File Names:
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.summary
+
+
+mothur > summary.tax(taxonomy = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.nr_v132.wang.pick.taxonomy, count = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table)
+
+It took 2 secs to create the summary file for 695970 sequences.
+
+
+Output File Names: 
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.nr_v132.wang.pick.tax.summary
+
+
+mothur > dist.seqs(fasta = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta, cutoff = 0.01, processors = 64)
+
+Using 64 processors.
+
+Sequence	Time	Num_Dists_Below_Cutoff
+
+It took 675 secs to find distances for 101377 sequences. 34088906 distances below cutoff 0.01.
+
+
+Output File Names: 
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.dist
+
+
+mothur > cluster(column = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.dist, count = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table, cutoff = 0.01)
+
+Using 64 processors.
+
+Clustering /home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.dist
+
+
+iter	time	label	num_otus	cutoff	tp	tn	fp	fn	sensitivity	specificity	ppv	npv	fdr	accuracy	mcc	f1score
+
+0.01
+0	0	0.01	101377	0.01	0	5.10451e+09	0	3.40889e+07	0	1	0	0.993366	1	0.993366	0	0	
+1	35	0.01	40501	0.01	3.17688e+07	5.10444e+09	68777	2.32012e+06	0.931939	0.999987	0.99784	0.999546	0.99784	0.999535	0.9641	0.963764	
+2	36	0.01	38809	0.01	3.17956e+07	5.10444e+09	70097	2.29333e+06	0.932725	0.999986	0.9978	0.999551	0.9978	0.99954	0.96449	0.964166	
+3	37	0.01	38777	0.01	3.17969e+07	5.10444e+09	70223	2.29197e+06	0.932765	0.999986	0.997796	0.999551	0.997796	0.99954	0.964509	0.964185	
+
+
+It took 281 seconds to cluster
+
+Output File Names: 
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.list
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.steps
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.sensspec
+
+
+mothur > make.shared(list = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.list, count = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table,label = 0.01)
+0.01
+
+Output File Names:
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.shared
+
+
+mothur > classify.otu(list = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.list, count = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table, taxonomy = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.nr_v132.wang.pick.taxonomy, label = 0.01, basis = sequence)
+0.01
+
+Output File Names: 
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.0.01.cons.taxonomy
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.0.01.cons.tax.summary
+
+
+mothur > get.oturep(list = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.list,fasta = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta,count = roadkill.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table, method = abundance)
+You did not provide a label, using 0.01.
+0.01	38777
+
+Output File Names: 
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.0.01.rep.count_table
+/home/manuel.coba/Microbiota_Roadkill_Wildlife/Results/Mothur/Analysis/roadkill.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.0.01.rep.fasta
+
+
+mothur > quit()
+
+
+It took 2264 seconds to run 31 commands from /home/manuel.coba/Microbiota_Roadkill_Wildlife/Scripts/MothurBatchFiles/metabarcoding.batch batch file.
+
+
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Detected 10 [WARNING] messages, please review.
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
