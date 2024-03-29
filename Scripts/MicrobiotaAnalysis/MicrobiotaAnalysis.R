@@ -36,28 +36,36 @@ library(tidyverse)
 library(VennDiagram)
 library(viridis)
 
-# Note: Please consider the full paths to the input and output files.
+################################################################################ 
+# IMPORTANT NOTE: Please consider the full paths to the input and output files.
+################################################################################
 
 # Data importing from mothur results ----
 
 # Outputs files names
 
-sharedfile <- "MothurResults/OtuTable.shared"
+sharedfile <- "./Results/Mothur/MothurResults/OtuTable.shared"
 
-taxfile <- "MothurResults/TaxTable.taxonomy"
+taxfile <- "./Results/Mothur/MothurResults/TaxTable.taxonomy"
 
 # Creating a phyloseq object
 
-mothur_raw_results = import_mothur(mothur_shared_file = sharedfile,
-                                   mothur_constaxonomy_file = taxfile)
+mothur_raw_results <- import_mothur(mothur_shared_file = sharedfile,
+                                    mothur_constaxonomy_file = taxfile)
 
 # Adding taxonomy information to phyloseq object
 
-colnames(tax_table(mothur_raw_results)) <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus")
+colnames(tax_table(mothur_raw_results)) <- c("Kingdom", 
+                                             "Phylum", 
+                                             "Class", 
+                                             "Order", 
+                                             "Family", 
+                                             "Genus")
 
 # Importing metadata
 
-metadata <- read_xlsx("MetadataRoadkillWildlife.xlsx", sheet = "Metadata") %>% 
+metadata <- read_xlsx("./Scripts/MicrobiotaAnalysis/MetadataRoadkillWildlife.xlsx", 
+                      sheet = "Metadata") %>% 
   as.data.frame()
 
 rownames(metadata) <- metadata$SampleID  
@@ -78,7 +86,8 @@ mothur_results
 
 table(tax_table(mothur_results)[,1])
 
-mothur_results <- subset_taxa(mothur_results, Kingdom != "unknown" & Kingdom != "Archaea")
+mothur_results <- subset_taxa(mothur_results, 
+                              Kingdom != "unknown" & Kingdom != "Archaea")
 
 mothur_results
 
@@ -86,7 +95,8 @@ mothur_results
 
 table(tax_table(mothur_results)[,2])
 
-mothur_results <- subset_taxa(mothur_results, Phylum != "Bacteria_unclassified")
+mothur_results <- subset_taxa(mothur_results, 
+                              Phylum != "Bacteria_unclassified")
 
 mothur_results
 
@@ -94,7 +104,8 @@ mothur_results
 
 sum(taxa_sums(mothur_results) == 1)
 
-mothur_results <- prune_taxa(taxa_sums(mothur_results) > 1, mothur_results)
+mothur_results <- prune_taxa(taxa_sums(mothur_results) > 1, 
+                             mothur_results)
 
 mothur_results
 
@@ -128,7 +139,7 @@ plot_seqdepth <-
   scale_fill_aaas() +
   facet_wrap(~ Specie,
              scales = "free_x",
-             nrow=1) +
+             nrow = 1) +
   theme(plot.title=element_text(face = "bold",
                                 size = 15,
                                 hjust = 0.5,
@@ -141,7 +152,7 @@ plot_seqdepth <-
         axis.title.x = element_text(face = "bold"),
         legend.title = element_text(face = "bold",
                                     size = 10),
-        legend.title.align=0.5,
+        legend.title.align = 0.5,
         legend.text = element_text(face = "italic",
                                    size = 10),
         axis.text.x = element_text(face = "bold", 
@@ -163,11 +174,11 @@ meta(mothur_results) %>%
 
 # Separating samples per species ----
 
-Species = phyloseq_sep_variable(mothur_results, "Specie")
+Species <- phyloseq_sep_variable(mothur_results, "Specie")
 
-Amphisbaena_results = Species$`Amphisbaena bassleri`
+Amphisbaena_results <- Species$`Amphisbaena bassleri`
 
-Crotophaga_results = Species$`Crotophaga ani`
+Crotophaga_results <- Species$`Crotophaga ani`
 
 # Function to count the number of families by Phylum ----
 
@@ -188,14 +199,14 @@ count_families <- function (phyloseq_obj) {
 
 # Functions for Relative Abundance Analysis ----
 
-# Create Otu count table
+# Create OTU count table
 
 otu_counts <- function(phyloseq_object){
   otu_table(phyloseq_object) %>%
     psmelt() %>%
     as_tibble() %>%
     arrange(Sample, OTU) %>%
-    rename(SampleID=Sample,Count=Abundance) %>%
+    rename(SampleID = Sample, Count = Abundance) %>%
     dplyr::select(SampleID, OTU, Count)
 }
 
@@ -210,7 +221,7 @@ taxonomy <- function(phyloseq_object) {
     dplyr::select(OTU, Kingdom, Phylum, Class, Order, Family, Genus)
 }
 
-# Join Otu count table and Taxonomy table
+# Join OTU count table and Taxonomy table
 
 otu_rel_abund <- function(data, otu, tax, samples, tax_rank) {
   inner_join(data, otu, by = "SampleID") %>%
@@ -219,11 +230,17 @@ otu_rel_abund <- function(data, otu, tax, samples, tax_rank) {
     mutate(Rel_Abund = Count / sum(Count)) %>%
     ungroup() %>%
     dplyr::select(-Count) %>%
-    pivot_longer(cols=c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "OTU"),
-                 names_to="Level",
+    pivot_longer(cols = c("Kingdom", 
+                          "Phylum", 
+                          "Class", 
+                          "Order", 
+                          "Family", 
+                          "Genus", 
+                          "OTU"),
+                 names_to = "Level",
                  values_to = "Taxon") %>%
     mutate(SampleID = factor(SampleID, levels = samples)) %>%
-    filter(Level==tax_rank) %>%
+    filter(Level == tax_rank) %>%
     dplyr::group_by(SampleID, Hours_since_death, Taxon) %>%
     rename(Death_hours = Hours_since_death) %>%
     summarise(Rel_Abund = sum(Rel_Abund), .groups = "drop") %>%
@@ -232,24 +249,24 @@ otu_rel_abund <- function(data, otu, tax, samples, tax_rank) {
     arrange(SampleID, desc(Mean_Rel_Abund))
 }
 
-# Create a taxon pool with a cutoff value for relative abundance
+# Create a taxa pool with a cutoff value for relative abundance
 
-taxon_pool <-function(otu_abund, cutoff) {
+taxon_pool <- function(otu_abund, cutoff) {
   dplyr::group_by(otu_abund, Taxon) %>%
-    summarise(Pool=max(Mean_Rel_Abund) < cutoff, 
-              Mean=mean(Mean_Rel_Abund),
-              .groups="drop")
+    summarise(Pool = max(Mean_Rel_Abund) < cutoff, 
+              Mean = mean(Mean_Rel_Abund),
+              .groups = "drop")
 }
 
 relative_abundance <- function(rel_abun, tax_pool){
-  inner_join(rel_abun, tax_pool, by="Taxon") %>%
+  inner_join(rel_abun, tax_pool, by = "Taxon") %>%
     mutate(Taxon = if_else(Pool, "Others", Taxon)) %>%
     dplyr::group_by(SampleID, Death_hours, Taxon) %>%
     summarise(Mean_Rel_Abund = sum(Mean_Rel_Abund), 
               Mean = sum(Mean),
               .groups = "drop") %>%
     mutate(Taxon = factor(Taxon),
-           Taxon = fct_reorder(Taxon, Mean, .desc=TRUE),
+           Taxon = fct_reorder(Taxon, Mean, .desc = TRUE),
            Taxon = fct_shift(Taxon, n = 1))
 }
 
@@ -263,7 +280,7 @@ data <- metadata %>%
 
 # Amphisbaena bassleri ----
 
-# Count unique taxons at Phylum level
+# Count unique taxa at Phylum level
 
 length(unique(tax_table(Amphisbaena_results)[, "Phylum"]))
 
@@ -306,32 +323,36 @@ plot_amph_rel_abund_phylum <-
   theme_classic2() +
   rotate_x_text(90) + 
   scale_y_continuous(expand = c(0,0)) +
-  theme(axis.title.y = element_text(face= "bold"),
-        axis.title.x = element_text(face= "bold"),
+  theme(axis.title.y = element_text(face = "bold"),
+        axis.title.x = element_text(face = "bold"),
         legend.title = element_text(face = "bold"),
-        legend.title.align=0.5,
         legend.spacing.y = unit(0.3, "cm"),
-        axis.text.x = element_text(face="bold"),
-        axis.text.y = element_text(face="bold")) +
-  scale_fill_manual(breaks = c("Bacteroidetes",
-                               "Cyanobacteria",
-                               "Firmicutes", 
-                               "Proteobacteria",
+        axis.text.x = element_text(face = "bold"),
+        axis.text.y = element_text(face = "bold")) +
+  scale_fill_manual(breaks = c("Firmicutes",
                                "Verrucomicrobia",
+                               "Bacteroidetes",
+                               "Proteobacteria",
+                               "Cyanobacteria",
                                "Others"),
-                    values = c("#1B9E77", "#D95F02", "#7570B3", "#E7298A", "#66A61E", "#B5B5B5"))
+                    values = c("#7570B3", 
+                               "#66A61E", 
+                               "#1B9E77", 
+                               "#E7298A", 
+                               "#D95F02", 
+                               "#B5B5B5"))
 
 plot_amph_rel_abund_phylum
 
 # Crotophaga ani ----
 
-# Count unique taxons at Phylum level
+# Count unique taxa at Phylum level
 
 length(unique(tax_table(Crotophaga_results)[, "Phylum"]))
 
 # Number of families by Phylum
 
-count_families(Crotophaga_results) %>% print(., n=21)
+count_families(Crotophaga_results) %>% print(., n = 21)
 
 # Relative abundance at Phylum level
 
@@ -369,21 +390,26 @@ plot_crot_rel_abund_phylum <-
   theme_classic2() +
   rotate_x_text(90) + 
   scale_y_continuous(expand = c(0,0)) +
-  theme(axis.title.y = element_text(face= "bold"),
-        axis.title.x = element_text(face= "bold"),
+  theme(axis.title.y = element_text(face = "bold"),
+        axis.title.x = element_text(face = "bold"),
         legend.title = element_text(face = "bold"),
-        legend.title.align=0.5,
         legend.spacing.y = unit(0.3, "cm"),
-        axis.text.x = element_text(face="bold"),
-        axis.text.y = element_text(face="bold")) +
-  scale_fill_manual(breaks = c("Actinobacteria",
-                               "Bacteroidetes",
-                               "Chlamydiae",
-                               "Epsilonbacteraeota",
-                               "Firmicutes",
+        axis.text.x = element_text(face = "bold"),
+        axis.text.y = element_text(face = "bold")) +
+  scale_fill_manual(breaks = c("Firmicutes",
+                               "Actinobacteria",
                                "Proteobacteria",
+                               "Epsilonbacteraeota",
+                               "Chlamydiae",
+                               "Bacteroidetes",
                                "Others"),
-                    values = c("#E6AB02", "#1B9E77", "#B3CDE3", "#FDC086", "#7570B3", "#E7298A", "#B5B5B5"))
+                    values = c("#7570B3", 
+                               "#E6AB02", 
+                               "#E7298A", 
+                               "#FDC086", 
+                               "#B3CDE3", 
+                               "#1B9E77", 
+                               "#B5B5B5"))
 
 plot_crot_rel_abund_phylum
 
@@ -393,22 +419,22 @@ plot_crot_rel_abund_phylum
 
 # Measures indexes
 
-amph_alpha_div<-estimate_richness(Amphisbaena_results,  
-                                  measures = c("Chao1", 
-                                               "Simpson", 
-                                               "Shannon"))
+amph_alpha_div <- estimate_richness(Amphisbaena_results,  
+                                    measures = c("Chao1", 
+                                                 "Simpson", 
+                                                 "Shannon"))
 
-rownames(amph_alpha_div)<-sample_data(Amphisbaena_results)$SampleID
+rownames(amph_alpha_div) <- sample_data(Amphisbaena_results)$SampleID
 
 amph_alpha_div
 
 # Kruskal-Wallis test in Simpson and Shannon index
 
 # Simpson index
-kruskal.test(amph_alpha_div$Simpson, g=factor(rownames(amph_alpha_div)))
+kruskal.test(amph_alpha_div$Simpson, g = factor(rownames(amph_alpha_div)))
 
 # Shannon index
-kruskal.test(amph_alpha_div$Shannon, g=factor(rownames(amph_alpha_div)))
+kruskal.test(amph_alpha_div$Shannon, g = factor(rownames(amph_alpha_div)))
 
 # Linear regression with Chao1 index as a function of the time since death
 
@@ -421,7 +447,7 @@ amph_lm_data <- tmp_amph$data %>% filter(variable %in% "Chao1")
 
 amph_rlm <- rlm(value ~ Hours_since_death, data = amph_lm_data, maxit = 25)
 
-f.robftest(amph_rlm, var="Hours_since_death")
+f.robftest(amph_rlm, var = "Hours_since_death")
 
 plot_amph_chao1 <- 
   ggplot(amph_lm_data, 
@@ -436,18 +462,28 @@ plot_amph_chao1 <-
   xlab("Time since death (hours)") +
   ylab("Alpha diversity \n(Chao1)\n") +
   labs(colour = "Time since death") +  
-  annotate("text", label = "p-value = 0.64", x = 4, y = 210, size = 3) +
+  annotate("text", 
+           label = "p-value = 0.64", 
+           x = 3, 
+           y = 190, 
+           size = 3.5) +
   theme_classic() +
-  theme(axis.title.y = element_text(face= "bold"),
-        axis.title.x = element_text(face= "bold"),
+  theme(axis.title.y = element_text(face = "bold"),
+        axis.title.x = element_text(face = "bold"),
         legend.title = element_text(face = "bold", size = 10),
-        legend.title.align=0.5,
+        legend.title.align = 0.5,
         strip.text.x = element_text(size = 12),
-        axis.text.x = element_text(face="bold", size=10),
-        axis.text.y = element_text(face="bold", size=10)) +
-  scale_colour_manual(breaks = c("0", "2", "6"), 
-                      labels = c("0 hours", "2 hours", "6 hours"),
-                      values = c("#00008B", "#FF3030", "#7FFF00"))
+        axis.text.x = element_text(face = "bold", size = 10),
+        axis.text.y = element_text(face = "bold", size = 10)) +
+  scale_colour_manual(breaks = c("0", 
+                                 "2", 
+                                 "6"), 
+                      labels = c("0 hours", 
+                                 "2 hours", 
+                                 "6 hours"),
+                      values = c("#00008B", 
+                                 "#FF3030", 
+                                 "#7FFF00"))
 
 plot_amph_chao1
 
@@ -466,12 +502,15 @@ rarefaction_amph$data$Sample <- rarefaction_amph$data$SampleID
 
 rarefac_amph_lab <- rarefaction_amph$data %>% 
   group_by(Sample) %>% 
-  summarise(Size=max(Size), `.S`=max(`.S`), Hours_since_death=max(Hours_since_death))
+  summarise(Size = max(Size), 
+            `.S` = max(`.S`), 
+            Hours_since_death = max(Hours_since_death))
 
 plot_amph_rarefaction <- 
   rarefaction_amph + 
   geom_line(linewidth = 0.6) +
-  ggrepel::geom_text_repel(data=rarefac_amph_lab, aes(x=Size, y=`.S`, label=Sample),
+  ggrepel::geom_text_repel(data = rarefac_amph_lab, 
+                           aes(x = Size, y =`.S`, label = Sample),
                            size = 3,
                            nudge_x = 0.1,
                            nudge_y = 0.01,
@@ -480,15 +519,21 @@ plot_amph_rarefaction <-
   guides(color = guide_legend(override.aes = aes(label = ""))) +
   labs(colour = "Time since death") +
   theme_light() +
-  theme(axis.title.y = element_text(face= "bold"),
-        axis.title.x = element_text(face= "bold"),
+  theme(axis.title.y = element_text(face = "bold"),
+        axis.title.x = element_text(face = "bold"),
         legend.title = element_text(face = "bold", size = 10),
-        legend.title.align=0.5,
-        axis.text.x = element_text(face="bold", size=10),
-        axis.text.y = element_text(face="bold", size=10)) +
-  scale_colour_manual(breaks = c("0", "2", "6"), 
-                      labels = c("0 hours", "2 hours", "6 hours"),
-                      values = c("#00008B", "#FF3030", "#7FFF00"))
+        legend.title.align = 0.5,
+        axis.text.x = element_text(face = "bold", size = 10),
+        axis.text.y = element_text(face = "bold", size = 10)) +
+  scale_colour_manual(breaks = c("0", 
+                                 "2", 
+                                 "6"), 
+                      labels = c("0 hours", 
+                                 "2 hours", 
+                                 "6 hours"),
+                      values = c("#00008B", 
+                                 "#FF3030", 
+                                 "#7FFF00"))
 
 plot_amph_rarefaction
 
@@ -496,22 +541,22 @@ plot_amph_rarefaction
 
 # Measures indexes
 
-crot_alpha_div<-estimate_richness(Crotophaga_results,  
-                                  measures = c("Chao1", 
-                                               "Simpson", 
-                                               "Shannon"))
+crot_alpha_div <- estimate_richness(Crotophaga_results,  
+                                    measures = c("Chao1", 
+                                                 "Simpson", 
+                                                 "Shannon"))
 
-rownames(crot_alpha_div)<-sample_data(Crotophaga_results)$SampleID
+rownames(crot_alpha_div) <- sample_data(Crotophaga_results)$SampleID
 
 crot_alpha_div
 
 # Kruskal-Wallis test in Simpson and Shannon index
 
 # Simpson index
-kruskal.test(crot_alpha_div$Simpson, g=factor(rownames(crot_alpha_div)))
+kruskal.test(crot_alpha_div$Simpson, g = factor(rownames(crot_alpha_div)))
 
 # Shannon index
-kruskal.test(crot_alpha_div$Shannon, g=factor(rownames(crot_alpha_div)))
+kruskal.test(crot_alpha_div$Shannon, g = factor(rownames(crot_alpha_div)))
 
 # Linear regression with Chao1 index as a function of the time since death
 
@@ -524,29 +569,46 @@ crot_lm_data <- tmp_crot$data %>% filter(variable %in% "Chao1")
 
 crot_rlm <- rlm(value ~ Hours_since_death, data = crot_lm_data, maxit = 25)
 
-f.robftest(crot_rlm, var="Hours_since_death")
+f.robftest(crot_rlm, var = "Hours_since_death")
 
 plot_crot_chao1 <- 
   ggplot(crot_lm_data, 
          aes(x = Hours_since_death, 
              y = value)) +
-  stat_smooth(formula = y ~ x, method = "rlm", col = "#8B0A50", linewidth = 0.5) +
+  stat_smooth(formula = y ~ x, 
+              method = "rlm", 
+              col = "#8B0A50", 
+              linewidth = 0.5,
+              method.args = list(maxit = 25)) +
   geom_point(aes(colour = as.factor(Hours_since_death)), size = 3) + 
   xlab("Time since death (hours)") +
   ylab("Alpha diversity \n(Chao1)\n") +
   labs(colour = "Time since death") +  
-  annotate("text", label = "p-value = 0.06", x = 35, y = 210, size = 3) +
+  annotate("text", 
+           label = "p-value = 0.06", 
+           x = 28, 
+           y = 210, 
+           size = 3.5) +
   theme_classic() +
-  theme(axis.title.y = element_text(face= "bold"),
-        axis.title.x = element_text(face= "bold"),
+  theme(axis.title.y = element_text(face = "bold"),
+        axis.title.x = element_text(face = "bold"),
         legend.title = element_text(face = "bold", size = 10),
-        legend.title.align=0.5,
+        legend.title.align = 0.5,
         strip.text.x = element_text(size = 12),
-        axis.text.x = element_text(face="bold", size=10),
-        axis.text.y = element_text(face="bold", size=10)) +
-  scale_colour_manual(breaks = c("1", "2", "6", "48"), 
-                      labels = c("1 hours", "2 hours", "6 hours", "48 hours"),
-                      values = c("#FF66CC", "#FF3030", "#7FFF00", "#FF9900"))
+        axis.text.x = element_text(face = "bold", size = 10),
+        axis.text.y = element_text(face = "bold", size = 10)) +
+  scale_colour_manual(breaks = c("1", 
+                                 "2", 
+                                 "6", 
+                                 "48"), 
+                      labels = c("1 hours", 
+                                 "2 hours", 
+                                 "6 hours", 
+                                 "48 hours"),
+                      values = c("#FF66CC", 
+                                 "#FF3030", 
+                                 "#7FFF00", 
+                                 "#FF9900"))
 
 plot_crot_chao1
 
@@ -565,12 +627,15 @@ rarefaction_crot$data$Sample <- rarefaction_crot$data$SampleID
 
 rarefac_crot_lab <- rarefaction_crot$data %>% 
   group_by(Sample) %>% 
-  summarise(Size=max(Size), `.S`=max(`.S`), Hours_since_death=max(Hours_since_death))
+  summarise(Size = max(Size), 
+            `.S`=max(`.S`), 
+            Hours_since_death = max(Hours_since_death))
 
 plot_crot_rarefaction <- 
   rarefaction_crot + 
   geom_line(linewidth = 0.6) +
-  ggrepel::geom_text_repel(data=rarefac_crot_lab, aes(x=Size, y=`.S`, label=Sample),
+  ggrepel::geom_text_repel(data = rarefac_crot_lab, 
+                           aes(x = Size, y = `.S`, label = Sample),
                            size = 3,  
                            nudge_x = 0.1,  
                            nudge_y = 0.01,  
@@ -579,15 +644,24 @@ plot_crot_rarefaction <-
   guides(color = guide_legend(override.aes = aes(label = ""))) +
   labs(colour = "Time since death") +
   theme_light() +
-  theme(axis.title.y = element_text(face= "bold"),
-        axis.title.x = element_text(face= "bold"),
+  theme(axis.title.y = element_text(face = "bold"),
+        axis.title.x = element_text(face = "bold"),
         legend.title = element_text(face = "bold", size = 10),
-        legend.title.align=0.5,
-        axis.text.x = element_text(face="bold", size=10),
-        axis.text.y = element_text(face="bold", size=10)) +
-  scale_colour_manual(breaks = c("1", "2", "6", "48"), 
-                      labels = c("1 hours", "2 hours", "6 hours", "48 hours"),
-                      values = c("#FF66CC", "#FF3030", "#7FFF00", "#FF9900"))
+        legend.title.align = 0.5,
+        axis.text.x = element_text(face = "bold", size = 10),
+        axis.text.y = element_text(face = "bold", size = 10)) +
+  scale_colour_manual(breaks = c("1", 
+                                 "2", 
+                                 "6", 
+                                 "48"), 
+                      labels = c("1 hours", 
+                                 "2 hours", 
+                                 "6 hours", 
+                                 "48 hours"),
+                      values = c("#FF66CC", 
+                                 "#FF3030", 
+                                 "#7FFF00", 
+                                 "#FF9900"))
 
 plot_crot_rarefaction
 
@@ -620,19 +694,25 @@ plot_amph_pcoa <-
   labs(color = "Hours since death",
        shape = "Sample ID") +
   theme_light() +
-  theme(axis.title.y = element_text(face= "bold"),
-        axis.title.x = element_text(face= "bold"),
+  theme(axis.title.y = element_text(face = "bold"),
+        axis.title.x = element_text(face = "bold"),
         legend.title = element_text(face = "bold", size = 10),
-        legend.title.align=0.5,
-        axis.text.x = element_text(face="bold", size=10),
-        axis.text.y = element_text(face="bold", size=10)) +        
+        legend.title.align = 0.5,
+        axis.text.x = element_text(face = "bold", size = 10),
+        axis.text.y = element_text(face = "bold", size = 10)) +        
   scale_shape_manual(values = c("SW001" = 15,
                                 "SW002" = 16,
                                 "SW003" = 17,
                                 "SW004" = 18)) + 
-  scale_colour_manual(breaks = c("0", "2", "6"), 
-                      labels = c("0 hours", "2 hours", "6 hours"),
-                      values = c("#00008B", "#FF3030", "#7FFF00")) +
+  scale_colour_manual(breaks = c("0", 
+                                 "2", 
+                                 "6"), 
+                      labels = c("0 hours", 
+                                 "2 hours", 
+                                 "6 hours"),
+                      values = c("#00008B", 
+                                 "#FF3030", 
+                                 "#7FFF00")) +
   guides(shape = guide_legend(order = 1),
          color = guide_legend(order = 2))
 
@@ -663,20 +743,29 @@ plot_crot_pcoa <-
   labs(color = "Hours since death",
        shape = "Sample ID") +
   theme_light() +
-  theme(axis.title.y = element_text(face= "bold"),
-        axis.title.x = element_text(face= "bold"),
+  theme(axis.title.y = element_text(face = "bold"),
+        axis.title.x = element_text(face = "bold"),
         legend.title = element_text(face = "bold", size = 10),
-        legend.title.align=0.5,
-        axis.text.x = element_text(face="bold", size=10),
-        axis.text.y = element_text(face="bold", size=10)) +
+        legend.title.align = 0.5,
+        axis.text.x = element_text(face = "bold", size = 10),
+        axis.text.y = element_text(face = "bold", size = 10)) +
   scale_shape_manual(values = c("SW005" = 15,
                                 "SW006" = 16,
                                 "SW007" = 17,
                                 "SW008" = 18,
                                 "SW009" = 8)) +
-  scale_colour_manual(breaks = c("1", "2", "6", "48"), 
-                      labels = c("1 hours", "2 hours", "6 hours", "48 hours"),
-                      values = c("#FF66CC", "#FF3030", "#7FFF00", "#FF9900")) +
+  scale_colour_manual(breaks = c("1", 
+                                 "2", 
+                                 "6", 
+                                 "48"), 
+                      labels = c("1 hours", 
+                                 "2 hours", 
+                                 "6 hours", 
+                                 "48 hours"),
+                      values = c("#FF66CC", 
+                                 "#FF3030", 
+                                 "#7FFF00", 
+                                 "#FF9900")) +
   guides(shape = guide_legend(order = 1),
          color = guide_legend(order = 2))
 
@@ -686,13 +775,13 @@ plot_crot_pcoa
 
 preprocess_data <- function(physeq_object, cols_samples_names) {
   
-  # Extract raw otu table
+  # Extract raw OTU table
   OTU_raw <- as.data.frame(otu_table(physeq_object))
   
   # Extract raw taxonomy table
   tax_raw <- as.data.frame(tax_table(physeq_object))
   
-  # Join both raw taxonomy and otu table
+  # Join both raw taxonomy and OTU table
   comm_raw <- cbind(tax_raw, OTU_raw)
   
   # Pivot and normalize data
@@ -783,9 +872,9 @@ rownames(reduced_hm_amph) <- str_replace_all(rownames(reduced_hm_amph),
 
 # Extract postmortem hours data
 
-postmortem_hours_amp <- sample_data(Amphisbaena_results)$Hours_since_death
+postmortem_hours_amph <- sample_data(Amphisbaena_results)$Hours_since_death
 
-# Define colors and legends
+# Define colors and legends for postmortem hours data
 
 color_postmortem_amph <- c("0" = "#F6A97A", 
                            "2" = "#D44292", 
@@ -795,22 +884,35 @@ legend_postmortem_amph <- c("0 hours",
                             "2 hours", 
                             "6 hours")
 
+# Extract landscape data
+
+landscape_amph <- sample_data(Amphisbaena_results)$Landscape
+
+# Define colors and legends for landscape data
+
+color_landscape_amph <- c("Intervened area" = "#FF0000",
+                          "Non-Intervened area" = "#7FFF00")
+
+# Heatmap annotation construction
+
 hm_annot_amph <- 
-  HeatmapAnnotation("Time since death" = postmortem_hours_amp,
-                    col = list("Time since death" = color_postmortem_amph),
+  HeatmapAnnotation("Time since death" = postmortem_hours_amph,
+                    "Landscape" = landscape_amph,
+                    col = list("Time since death" = color_postmortem_amph,
+                               "Landscape" = color_landscape_amph),
                     annotation_legend_param = list("Time since death" = list(title = "Time since death",
                                                                              at = names(color_postmortem_amph),
-                                                                             labels = legend_postmortem_amph)),
+                                                                             labels = legend_postmortem_amph),
+                                                   "Landscape" = list(title = "Landscape",
+                                                                             at = names(color_landscape_amph))),
                     annotation_name_gp = gpar(fontsize = 11, fontface = "bold"),
-                    show_legend = FALSE,
+                    show_legend = TRUE,
                     annotation_name_side = "right")
 
 # Create heatmap object
 
 amph_heatmap <- 
   Heatmap(reduced_hm_amph,
-          column_title = "A",
-          column_title_gp = gpar(fontsize = 12, fontface = "bold"),
           name = 'log OTUs Abundance',
           show_heatmap_legend = TRUE,
           heatmap_legend_param = list(legend_direction = "horizontal", 
@@ -821,7 +923,7 @@ amph_heatmap <-
           column_dend_height = unit(1, "cm"), 
           row_dend_width = unit(1.5, "cm"),
           col = mako(n = 20),
-          cluster_columns = FALSE,
+          cluster_columns = TRUE,
           use_raster = FALSE, 
           row_names_side = "right", 
           row_dend_side = "left",
@@ -875,7 +977,7 @@ rownames(reduced_hm_crot) <- str_replace_all(rownames(reduced_hm_crot),
 
 postmortem_hours_crot <- sample_data(Crotophaga_results)$Hours_since_death
 
-# Define colors and legends
+# Define colors and legends for postmortem data
 
 color_postmortem_crot <- c("1" = "#F66D7A", 
                            "2" = "#D44292", 
@@ -887,22 +989,35 @@ legend_postmortem_crot <- c("1 hours",
                             "6 hours",
                             "48 hours")
 
+# Extract landscape data
+
+landscape_crot <- sample_data(Crotophaga_results)$Landscape
+
+# Define colors and legends for landscape data
+
+color_landscape_crot <- c("Intervened area" = "#FF0000",
+                          "Non-Intervened area" = "#7FFF00")
+
+# Heatmap aannotation construction
+
 hm_annot_crot <- 
   HeatmapAnnotation("Time since death" = postmortem_hours_crot,
-                    col = list("Time since death" = color_postmortem_crot),
+                    "Landscape" = landscape_crot,
+                    col = list("Time since death" = color_postmortem_crot,
+                               "Landscape" = color_landscape_crot),
                     annotation_legend_param = list("Time since death" = list(title = "Time since death",
                                                                              at = names(color_postmortem_crot),
-                                                                             labels = legend_postmortem_crot)),
+                                                                             labels = legend_postmortem_crot),
+                                                   "Landscape" = list(title = "Landscape",
+                                                                      at = names(color_landscape_crot))),
                     annotation_name_gp = gpar(fontsize = 11, fontface = "bold"),
-                    show_legend = FALSE,
-                    annotation_name_side = "left")
+                    show_legend = TRUE,
+                    annotation_name_side = "right")
 
 # Create heatmap object
 
 crot_heatmap <- 
   Heatmap(reduced_hm_crot,
-          column_title = "B",
-          column_title_gp = gpar(fontsize = 12, fontface = "bold"),
           name = 'log OTUs Abundance',
           show_heatmap_legend = TRUE,
           heatmap_legend_param = list(legend_direction = "horizontal", 
@@ -911,12 +1026,12 @@ crot_heatmap <-
           row_names_gp = grid::gpar(fontsize = 10),
           column_names_gp = grid::gpar(fontsize = 10, fontface = "bold"),
           column_dend_height = unit(1, "cm"), 
-                        row_dend_width = unit(1.5, "cm"),
+          row_dend_width = unit(1.5, "cm"),
           col = mako(n = 20),
-          cluster_columns = FALSE,
+          cluster_columns = TRUE,
           use_raster = FALSE, 
-          row_names_side = "left", 
-          row_dend_side = "right",
+          row_names_side = "right", 
+          row_dend_side = "left",
           width = unit(35, "mm"))
 
 # Draw heatmap
@@ -930,35 +1045,9 @@ plot_crot_heatmap <- heatmap_to_ggplot(plot_crot_heatmap)
 
 plot_crot_heatmap
 
-# Create a 'Time since death' legend ----
-
-colors_time_hm <- c("#F6A97A",
-                    "#F66D7A",
-                    "#D44292", 
-                    "#952EA0",
-                    "#4B2991")
-
-legend_time_hm <- c("0 hours",
-                    "1 hours", 
-                    "2 hours", 
-                    "6 hours",
-                    "48 hours")
-
-lgd_time_death = Legend(labels = legend_time_hm, 
-                        title = "Time since death", 
-                        legend_gp = gpar(fill = colors_time_hm),
-                        title_gp = gpar(fontsize = 10, 
-                                        fontface = "bold"),
-                        labels_gp = gpar(fontsize = 10),
-                        legend_width = unit(0.5, "mm"))
-
-lgd_time_death <- heatmap_to_ggplot(lgd_time_death)
-
-lgd_time_death
-
 # Function filter OTUs based on prevalence and abundance ----
 
-venn_core_microbiome <- function (physeq_object, group_name, abund_value, prev_value) {
+venn_core_microbiota <- function (physeq_object, group_name, abund_value, prev_value) {
   
   comp <- microbiome::transform(physeq_object, "compositional")
   
@@ -975,27 +1064,36 @@ venn_core_microbiome <- function (physeq_object, group_name, abund_value, prev_v
   for (i in var_names) {
     filter_expr <- paste0("subset_samples(comp.n, ", group_name, " == '", i, "')")
     sub <- eval(parse(text = filter_expr))
-    core_microbiome <- core_members(sub, detection = abund_value, prevalence = prev_value)
+    core_microbiome <- core_members(sub, 
+                                    detection = abund_value, 
+                                    prevalence = prev_value)
     list_core[[i]] <- core_microbiome
   }
   
   return(list_core)
 }
 
-# Core Microbiome ----
+# Core Microbiota ----
 
 # Amphisbaena bassleri ----
 
-amph_list_core <- venn_core_microbiome(physeq_object = Amphisbaena_results,
-                                       group_name = "SampleID",
-                                       abund_value = 0.001,
-                                       prev_value = 0.9)
+# Identifying the taxa that composed the core microbiota
 
-plot_amph_core_microbiome <-
+amph_list_core <- venn_core_microbiota(physeq_object = Amphisbaena_results,
+                                       group_name = "SampleID",
+                                       abund_value = 0.01/100,
+                                       prev_value = 90/100)
+
+# Venn diagram for the core microbiota
+
+plot_amph_core_microbiota <-
   venn.diagram(x = amph_list_core,
                filename = NULL,
                disable.logging = TRUE,
-               fill = c("#00008B", "#FF0000", "#FFFF00", "#00FF00"),
+               fill = c("#00008B", 
+                        "#FF0000", 
+                        "#FFFF00", 
+                        "#00FF00"),
                alpha = 0.5,
                cat.fontface = 2,
                cex = 1,
@@ -1003,97 +1101,109 @@ plot_amph_core_microbiome <-
                print.mode = c("raw"),
                fontface = 2)
 
-plot_amph_core_microbiome <- ggpubr::as_ggplot(plot_amph_core_microbiome)
+plot_amph_core_microbiota <- ggpubr::as_ggplot(plot_amph_core_microbiota)
 
-plot_amph_core_microbiome
+plot_amph_core_microbiota
 
-amph_core_microbiome <- Reduce(intersect, amph_list_core)
+# Visualization of the taxa from core microbiota in a data frame
 
-amph_core_microbiome
+amph_core_microbiota <- Reduce(intersect, amph_list_core)
+
+amph_core_microbiota <- sub(":.*", "", amph_core_microbiota)
+
+amph_core_microbiota <- amph_taxonomy[amph_taxonomy$OTU %in% amph_core_microbiota, ]
+
+amph_core_microbiota
 
 # Crotophaga ani ----
 
-crot_list_core <- venn_core_microbiome(physeq_object = Crotophaga_results,
-                                       group_name = "SampleID",
-                                       abund_value = 0.001,
-                                       prev_value = 0.9)
+# Identifying the taxa that composed the core microbiota
 
-plot_crot_core_microbiome <- 
+crot_list_core <- venn_core_microbiota(physeq_object = Crotophaga_results,
+                                       group_name = "SampleID",
+                                       abund_value = 0.01/100,
+                                       prev_value = 90/100)
+
+# Venn diagram for core microbiota
+
+plot_crot_core_microbiota <- 
   venn.diagram(x = crot_list_core,
                filename = NULL,
                disable.logging = TRUE,
-               fill = c("#00F5FF", "#FF3E96", "#FFFF00", "#66CD00", "#68228B"),
+               fill = c("#00F5FF", 
+                        "#FF3E96", 
+                        "#FFFF00", 
+                        "#66CD00", 
+                        "#68228B"),
                alpha = 0.5,
                cat.fontface = 2,
-               cat.just=list(c(NA, 1), c(-0.5,-4) , c(1,-0.5) , c(NA, NA) , c(1, -3)),
+               cat.just = list(c(NA, 1), 
+                               c(-0.5,-4), 
+                               c(1,-0.5), 
+                               c(NA, NA), 
+                               c(1, -3)),
                cex = 1,
                cat.cex = 1,
                print.mode = c("raw"),
                fontface = 2)
 
-plot_crot_core_microbiome <- ggpubr::as_ggplot(plot_crot_core_microbiome)
+plot_crot_core_microbiota <- ggpubr::as_ggplot(plot_crot_core_microbiota)
 
-plot_crot_core_microbiome
+plot_crot_core_microbiota
 
-crot_core_microbiome <- Reduce(intersect, crot_list_core)
+# Visualization of the taxa from core microbiota in a data frame
 
-crot_core_microbiome
+crot_core_microbiota <- Reduce(intersect, crot_list_core)
+
+crot_core_microbiota <- sub(":.*", "", crot_core_microbiota)
+
+crot_core_microbiota <- crot_taxonomy[crot_taxonomy$OTU %in% crot_core_microbiota, ]
+
+crot_core_microbiota
 
 # Merge plots ----
 
-# Relative abundance
+# Microbiota composition of A. bassleri
 
-FigureRelAbund <- grid.arrange(plot_amph_rel_abund_phylum, plot_crot_rel_abund_phylum,
-                               widths = c(1, 0.05, 1),
-                               layout_matrix = rbind(c(1, NA, 2)))
+FigureMicroComp_Amph <- grid.arrange(plot_amph_rel_abund_phylum, plot_amph_heatmap,
+                                     widths = c(1, 0.01, 1.5),
+                                     layout_matrix = rbind(c(1, NA, 2)))
 
-Fig2 <- ggpubr::as_ggplot(FigureRelAbund) +
+Fig2 <- ggpubr::as_ggplot(FigureMicroComp_Amph) +
   draw_plot_label(label = LETTERS[1:2],
                   size = 12,
-                  x = c(0, 0.51),
+                  x = c(0, 0.4),
                   y = c(1, 1))
 
 Fig2
 
-# Heatmaps
+# Microbiota composition of C. ani
 
-FigureHeatmaps <- grid.arrange(plot_amph_heatmap, lgd_time_death, plot_crot_heatmap,
-                               widths = c(1, 0.1, 1),
-                               layout_matrix = rbind(c(1, 2, 3),
-                                                     c(1, NA, 3),
-                                                     c(1, NA, 3)))
+FigureMicroComp_Crot <- grid.arrange(plot_crot_rel_abund_phylum, plot_crot_heatmap,
+                                     widths = c(1, 0.01, 1.5),
+                                     layout_matrix = rbind(c(1, NA, 2)))
 
-Fig3 <- ggpubr::as_ggplot(FigureHeatmaps) 
+Fig3 <- ggpubr::as_ggplot(FigureMicroComp_Crot) +
+  draw_plot_label(label = LETTERS[1:2],
+                  size = 12,
+                  x = c(0, 0.4),
+                  y = c(1, 1))
 
 Fig3
 
 # Alpha diversity - Chao1 linear regression
 
-FigureChao1 <- grid.arrange(plot_amph_chao1, NULL, plot_crot_chao1, 
-                            nrow=3,
-                            heights = c(1, 0.01, 1))
+FigureChao1 <- grid.arrange(plot_amph_chao1, plot_crot_chao1, 
+                            widths = c(1, 0.01, 1),
+                            layout_matrix = rbind(c(1, NA, 2)))
 
 Fig4 <- ggpubr::as_ggplot(FigureChao1) +
   draw_plot_label(label = LETTERS[1:2],
                   size = 12,
-                  x = c(0, 0),
-                  y = c(1, 0.5))
+                  x = c(0, 0.5),
+                  y = c(1, 1))
 
 Fig4
-
-# Rarefaction curves
-
-FigureRarefCurves <- grid.arrange(plot_amph_rarefaction, NULL, plot_crot_rarefaction, 
-                                  nrow=3,
-                                  heights = c(1, 0.01, 1))
-
-Fig5 <- ggpubr::as_ggplot(FigureRarefCurves) +
-  draw_plot_label(label = LETTERS[1:2],
-                  size = 12,
-                  x = c(0, 0),
-                  y = c(1, 0.5))
-
-Fig5
 
 # PCoA
 
@@ -1101,34 +1211,71 @@ FigurePCoA <- grid.arrange(plot_amph_pcoa, plot_crot_pcoa,
                            widths = c(1, 0.05, 1),
                            layout_matrix = rbind(c(1, NA, 2)))
 
-Fig6 <- ggpubr::as_ggplot(FigurePCoA) +
+Fig5 <- ggpubr::as_ggplot(FigurePCoA) +
   draw_plot_label(label = LETTERS[1:2],
                   size = 12,
-                  x = c(0, 0.52),
+                  x = c(0, 0.5),
                   y = c(1, 1))
 
-Fig6
+Fig5
 
-# Core microbiome
+# Core microbiota
 
-FigureCoreMicrobiome <- grid.arrange(plot_amph_core_microbiome, plot_crot_core_microbiome,
+FigureCoreMicrobiota <- grid.arrange(plot_amph_core_microbiota, plot_crot_core_microbiota,
                                      widths = c(0.5, 0.05, 0.5),
                                      layout_matrix = rbind(c(1, NA, 2)))
 
-Fig7 <- ggpubr::as_ggplot(FigureCoreMicrobiome) +
+Fig6 <- ggpubr::as_ggplot(FigureCoreMicrobiota) +
   draw_plot_label(label = LETTERS[1:2],
                   size = 12,
                   x = c(0, 0.53),
                   y = c(1, 1))
 
-Fig7
+Fig6
 
 # Save plots ----
 
-ggsave("Plots/Fig_SeqDepth.jpeg", plot = plot_seqdepth, width = 6, height = 4, dpi = 1000, scale = 1.5)
-ggsave("Plots/Fig2_RelAbundPhyla.jpeg", plot = Fig2, width = 6, height = 3.5, dpi = 1000, scale = 1.5)
-ggsave("Plots/Fig3_HeatmapFamilies.jpeg", plot = Fig3, width = 6.75, height = 4, dpi = 1000, scale = 1.5)
-ggsave("Plots/Fig4_Chao1Regression.jpeg", plot = Fig4, width = 3.5, height = 2.75, dpi = 1000, scale = 1.5)
-ggsave("Plots/Fig5_RarefCurves.jpeg", plot = Fig5, width = 4.5, height = 3.5, dpi = 1000, scale = 1.5)
-ggsave("Plots/Fig6_PCoA.jpeg", plot = Fig6, width = 6, height = 2.5, dpi = 1000, scale = 1.5)
-ggsave("Plots/Fig7_CoreMicrobiome.jpeg", plot = Fig7, width = 3, height = 1.5, dpi = 1000, scale = 3)
+# Microbiota composition of Amphisbaena bassleri (Fig2)
+
+ggsave("./Results/Microbiota/Plots/Fig2_MicrobiotaAmph.jpeg", 
+       plot = Fig2, 
+       width = 5.75, 
+       height = 3.75, 
+       dpi = 1000, 
+       scale = 1.6)
+
+# Microbiota composition of Crotophaga ani (Fig3)
+
+ggsave("./Results/Microbiota/Plots/Fig3_MicrobiotaCrot.jpeg", 
+       plot = Fig3, 
+       width = 5.85, 
+       height = 3.75, 
+       dpi = 1000, 
+       scale = 1.6)
+
+# Alpha diversity with linear regression using Chao1 index (Fig4)
+
+ggsave("./Results/Microbiota/Plots/Fig4_Chao1Regression.jpeg", 
+       plot = Fig4, 
+       width = 6, 
+       height = 2, 
+       dpi = 1000, 
+       scale = 1.5)
+
+# Beta diversity using PCoA (Fig5)
+
+ggsave("./Results/Microbiota/Plots/Fig5_PCoA.jpeg", 
+       plot = Fig5, 
+       width = 6, 
+       height = 2.5, 
+       dpi = 1000, 
+       scale = 1.5)
+
+# Core microbiota at Genus level (Fig6)
+
+ggsave("./Results/Microbiota/Plots/Fig6_CoreMicrobiota.jpeg", 
+       plot = Fig6, 
+       width = 3, 
+       height = 1.5, 
+       dpi = 1000, 
+       scale = 3)
