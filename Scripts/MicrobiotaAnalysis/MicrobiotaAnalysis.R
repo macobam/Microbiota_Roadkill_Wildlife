@@ -420,72 +420,14 @@ plot_crot_rel_abund_phylum
 # Measures indexes
 
 amph_alpha_div <- estimate_richness(Amphisbaena_results,  
-                                    measures = c("Chao1", 
-                                                 "Simpson", 
-                                                 "Shannon"))
+                                    measures = c("Observed",
+                                                 "Shannon",
+                                                 "Simpson",
+                                                 "Chao1"))
 
 rownames(amph_alpha_div) <- sample_data(Amphisbaena_results)$SampleID
 
 amph_alpha_div
-
-# Kruskal-Wallis test in Simpson and Shannon index
-
-# Simpson index
-kruskal.test(amph_alpha_div$Simpson, g = factor(rownames(amph_alpha_div)))
-
-# Shannon index
-kruskal.test(amph_alpha_div$Shannon, g = factor(rownames(amph_alpha_div)))
-
-# Linear regression with Chao1 index as a function of the time since death
-
-sample_data(Amphisbaena_results)$Hours_since_death <- 
-  as(sample_data(Amphisbaena_results)$Hours_since_death, "double")
-
-tmp_amph <- plot_richness(Amphisbaena_results)
-
-amph_lm_data <- tmp_amph$data %>% filter(variable %in% "Chao1")
-
-amph_rlm <- rlm(value ~ Hours_since_death, data = amph_lm_data, maxit = 25)
-
-f.robftest(amph_rlm, var = "Hours_since_death")
-
-plot_amph_chao1 <- 
-  ggplot(amph_lm_data, 
-         aes(x = Hours_since_death, 
-             y = value)) +
-  stat_smooth(formula = y ~ x, 
-              method = "rlm", 
-              col = "#8B0A50", 
-              linewidth = 0.5, 
-              method.args = list(maxit = 25)) +
-  geom_point(aes(colour = as.factor(Hours_since_death)), size = 3) + 
-  xlab("Time since death (hours)") +
-  ylab("Alpha diversity \n(Chao1)\n") +
-  labs(colour = "Time since death") +  
-  annotate("text", 
-           label = "p-value = 0.64", 
-           x = 3, 
-           y = 190, 
-           size = 3.5) +
-  theme_classic() +
-  theme(axis.title.y = element_text(face = "bold"),
-        axis.title.x = element_text(face = "bold"),
-        legend.title = element_text(face = "bold", size = 10),
-        legend.title.align = 0.5,
-        strip.text.x = element_text(size = 12),
-        axis.text.x = element_text(face = "bold", size = 10),
-        axis.text.y = element_text(face = "bold", size = 10)) +
-  scale_colour_manual(breaks = c("0", 
-                                 "2", 
-                                 "6"), 
-                      labels = c("0 hours", 
-                                 "2 hours", 
-                                 "6 hours"),
-                      values = c("#00008B", 
-                                 "#FF3030", 
-                                 "#7FFF00"))
-
-plot_amph_chao1
 
 # Rarefaction curves
 
@@ -542,75 +484,14 @@ plot_amph_rarefaction
 # Measures indexes
 
 crot_alpha_div <- estimate_richness(Crotophaga_results,  
-                                    measures = c("Chao1", 
-                                                 "Simpson", 
-                                                 "Shannon"))
+                                    measures = c("Observed",
+                                                 "Shannon",
+                                                 "Simpson",
+                                                 "Chao1"))
 
 rownames(crot_alpha_div) <- sample_data(Crotophaga_results)$SampleID
 
 crot_alpha_div
-
-# Kruskal-Wallis test in Simpson and Shannon index
-
-# Simpson index
-kruskal.test(crot_alpha_div$Simpson, g = factor(rownames(crot_alpha_div)))
-
-# Shannon index
-kruskal.test(crot_alpha_div$Shannon, g = factor(rownames(crot_alpha_div)))
-
-# Linear regression with Chao1 index as a function of the time since death
-
-sample_data(Crotophaga_results)$Hours_since_death <- 
-  as(sample_data(Crotophaga_results)$Hours_since_death, "double")
-
-tmp_crot <- plot_richness(Crotophaga_results)
-
-crot_lm_data <- tmp_crot$data %>% filter(variable %in% "Chao1")
-
-crot_rlm <- rlm(value ~ Hours_since_death, data = crot_lm_data, maxit = 25)
-
-f.robftest(crot_rlm, var = "Hours_since_death")
-
-plot_crot_chao1 <- 
-  ggplot(crot_lm_data, 
-         aes(x = Hours_since_death, 
-             y = value)) +
-  stat_smooth(formula = y ~ x, 
-              method = "rlm", 
-              col = "#8B0A50", 
-              linewidth = 0.5,
-              method.args = list(maxit = 25)) +
-  geom_point(aes(colour = as.factor(Hours_since_death)), size = 3) + 
-  xlab("Time since death (hours)") +
-  ylab("Alpha diversity \n(Chao1)\n") +
-  labs(colour = "Time since death") +  
-  annotate("text", 
-           label = "p-value = 0.06", 
-           x = 28, 
-           y = 210, 
-           size = 3.5) +
-  theme_classic() +
-  theme(axis.title.y = element_text(face = "bold"),
-        axis.title.x = element_text(face = "bold"),
-        legend.title = element_text(face = "bold", size = 10),
-        legend.title.align = 0.5,
-        strip.text.x = element_text(size = 12),
-        axis.text.x = element_text(face = "bold", size = 10),
-        axis.text.y = element_text(face = "bold", size = 10)) +
-  scale_colour_manual(breaks = c("1", 
-                                 "2", 
-                                 "6", 
-                                 "48"), 
-                      labels = c("1 hours", 
-                                 "2 hours", 
-                                 "6 hours", 
-                                 "48 hours"),
-                      values = c("#FF66CC", 
-                                 "#FF3030", 
-                                 "#7FFF00", 
-                                 "#FF9900"))
-
-plot_crot_chao1
 
 # Rarefaction curves
 
@@ -890,8 +771,8 @@ landscape_amph <- sample_data(Amphisbaena_results)$Landscape
 
 # Define colors and legends for landscape data
 
-color_landscape_amph <- c("Intervened area" = "#FF0000",
-                          "Non-Intervened area" = "#7FFF00")
+color_landscape_amph <- c("Altered area" = "#FF0000",
+                          "Unaltered area" = "#7FFF00")
 
 # Heatmap annotation construction
 
@@ -995,8 +876,8 @@ landscape_crot <- sample_data(Crotophaga_results)$Landscape
 
 # Define colors and legends for landscape data
 
-color_landscape_crot <- c("Intervened area" = "#FF0000",
-                          "Non-Intervened area" = "#7FFF00")
+color_landscape_crot <- c("Altered area" = "#FF0000",
+                          "Unaltered area" = "#7FFF00")
 
 # Heatmap aannotation construction
 
@@ -1191,13 +1072,13 @@ Fig3 <- ggpubr::as_ggplot(FigureMicroComp_Crot) +
 
 Fig3
 
-# Alpha diversity - Chao1 linear regression
+# PCoA
 
-FigureChao1 <- grid.arrange(plot_amph_chao1, plot_crot_chao1, 
-                            widths = c(1, 0.01, 1),
-                            layout_matrix = rbind(c(1, NA, 2)))
+FigurePCoA <- grid.arrange(plot_amph_pcoa, plot_crot_pcoa,
+                           widths = c(1, 0.05, 1),
+                           layout_matrix = rbind(c(1, NA, 2)))
 
-Fig4 <- ggpubr::as_ggplot(FigureChao1) +
+Fig4 <- ggpubr::as_ggplot(FigurePCoA) +
   draw_plot_label(label = LETTERS[1:2],
                   size = 12,
                   x = c(0, 0.5),
@@ -1205,33 +1086,19 @@ Fig4 <- ggpubr::as_ggplot(FigureChao1) +
 
 Fig4
 
-# PCoA
-
-FigurePCoA <- grid.arrange(plot_amph_pcoa, plot_crot_pcoa,
-                           widths = c(1, 0.05, 1),
-                           layout_matrix = rbind(c(1, NA, 2)))
-
-Fig5 <- ggpubr::as_ggplot(FigurePCoA) +
-  draw_plot_label(label = LETTERS[1:2],
-                  size = 12,
-                  x = c(0, 0.5),
-                  y = c(1, 1))
-
-Fig5
-
 # Core microbiota
 
 FigureCoreMicrobiota <- grid.arrange(plot_amph_core_microbiota, plot_crot_core_microbiota,
                                      widths = c(0.5, 0.05, 0.5),
                                      layout_matrix = rbind(c(1, NA, 2)))
 
-Fig6 <- ggpubr::as_ggplot(FigureCoreMicrobiota) +
+Fig5 <- ggpubr::as_ggplot(FigureCoreMicrobiota) +
   draw_plot_label(label = LETTERS[1:2],
                   size = 12,
                   x = c(0, 0.53),
                   y = c(1, 1))
 
-Fig6
+Fig5
 
 # Save plots ----
 
@@ -1253,28 +1120,19 @@ ggsave("./Results/Microbiota/Plots/Fig3_MicrobiotaCrot.jpeg",
        dpi = 1000, 
        scale = 1.6)
 
-# Alpha diversity with linear regression using Chao1 index (Fig4)
+# Beta diversity using PCoA (Fig4)
 
-ggsave("./Results/Microbiota/Plots/Fig4_Chao1Regression.jpeg", 
+ggsave("./Results/Microbiota/Plots/Fig4_PCoA.jpeg", 
        plot = Fig4, 
-       width = 6, 
-       height = 2, 
-       dpi = 1000, 
-       scale = 1.5)
-
-# Beta diversity using PCoA (Fig5)
-
-ggsave("./Results/Microbiota/Plots/Fig5_PCoA.jpeg", 
-       plot = Fig5, 
        width = 6, 
        height = 2.5, 
        dpi = 1000, 
        scale = 1.5)
 
-# Core microbiota at Genus level (Fig6)
+# Core microbiota at Genus level (Fig5)
 
-ggsave("./Results/Microbiota/Plots/Fig6_CoreMicrobiota.jpeg", 
-       plot = Fig6, 
+ggsave("./Results/Microbiota/Plots/Fig5_CoreMicrobiota.jpeg", 
+       plot = Fig5, 
        width = 3, 
        height = 1.5, 
        dpi = 1000, 
