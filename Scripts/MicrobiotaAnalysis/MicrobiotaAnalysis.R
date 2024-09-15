@@ -25,6 +25,7 @@ library(MASS)
 library(metagMisc)
 library(microbiome)
 library(microbiomeutilities)
+library(pals)
 library(phyloseq)
 library(ranacapa)
 library(RColorBrewer)
@@ -33,12 +34,17 @@ library(sfsmisc)
 library(stats)
 library(stringr)
 library(tidyverse)
+library(UpSetR)
 library(VennDiagram)
 library(viridis)
 
 ################################################################################ 
 # IMPORTANT NOTE: Please consider the full paths to the input and output files.
 ################################################################################
+
+# Set working directory ----
+
+setwd("C:/Users/macobam/Desktop/Microbiota_Roadkill_Wildlife")
 
 # Data importing from mothur results ----
 
@@ -65,7 +71,7 @@ colnames(tax_table(mothur_raw_results)) <- c("Kingdom",
 # Importing metadata
 
 metadata <- read_xlsx("./Scripts/MicrobiotaAnalysis/MetadataRoadkillWildlife.xlsx", 
-                      sheet = "Metadata") %>% 
+                      sheet = "Metadata") %>%
   as.data.frame()
 
 rownames(metadata) <- metadata$SampleID  
@@ -162,7 +168,7 @@ plot_seqdepth <-
 
 plot_seqdepth
 
-# Stats sequencing depth by specie
+# Stats sequencing depth by species
 
 meta(mothur_results) %>% 
   group_by(Specie) %>% 
@@ -180,26 +186,26 @@ Amphisbaena_results <- Species$`Amphisbaena bassleri`
 
 Crotophaga_results <- Species$`Crotophaga ani`
 
-# Function to count the number of families by Phylum ----
+# Function to count the total number of OTUs within a specific higher taxonomic level from a deeper taxonomic level ----
 
-count_families <- function (phyloseq_obj) {
+count_taxlevel <- function (phyloseq_obj, HigherTaxLevel, DeeperTaxLevel) {
   tax_table <- tax_table(phyloseq_obj)
   
   tax_df <- as.data.frame(tax_table) %>%
     rownames_to_column(var = "OTU_ID") %>%
-    filter(!is.na(Phylum))
+    filter(!is.na(.data[[HigherTaxLevel]]))
   
-  count_per_phylum <- tax_df %>%
-    group_by(Phylum) %>%
-    summarize(num_families = n_distinct(Family)) %>% 
-    arrange(desc(num_families))
+  count_per_taxlevel <- tax_df %>%
+    group_by(.data[[HigherTaxLevel]]) %>%
+    summarize(total = n_distinct(.data[[DeeperTaxLevel]]), .groups = 'drop') %>% 
+    arrange(desc(total))
   
-  print(count_per_phylum)
-}  
+  print(count_per_taxlevel)
+}
 
 # Functions for Relative Abundance Analysis ----
 
-# Create OTU count table
+# Create a table of OTUs count from phyloseq object
 
 otu_counts <- function(phyloseq_object){
   otu_table(phyloseq_object) %>%
@@ -210,7 +216,7 @@ otu_counts <- function(phyloseq_object){
     dplyr::select(SampleID, OTU, Count)
 }
 
-# Create taxonomy table
+# Create a table of taxonomy from phyloseq object
 
 taxonomy <- function(phyloseq_object) {
   tax_table(phyloseq_object) %>% 
@@ -221,7 +227,7 @@ taxonomy <- function(phyloseq_object) {
     dplyr::select(OTU, Kingdom, Phylum, Class, Order, Family, Genus)
 }
 
-# Join OTU count table and Taxonomy table
+# Merge OTU count table with taxonomy table
 
 otu_rel_abund <- function(data, otu, tax, samples, tax_rank) {
   inner_join(data, otu, by = "SampleID") %>%
@@ -249,7 +255,7 @@ otu_rel_abund <- function(data, otu, tax, samples, tax_rank) {
     arrange(SampleID, desc(Mean_Rel_Abund))
 }
 
-# Create a taxa pool with a cutoff value for relative abundance
+# Create a taxa pool by filtering taxa with relative abundance above a specified cut-off value
 
 taxon_pool <- function(otu_abund, cutoff) {
   dplyr::group_by(otu_abund, Taxon) %>%
@@ -270,49 +276,75 @@ relative_abundance <- function(rel_abun, tax_pool){
            Taxon = fct_shift(Taxon, n = 1))
 }
 
-# Selection of specific interest variables from metadata table to create a new data table
+# Select specific variables of interest from the metadata table to create a new data table
 
 data <- metadata %>% 
   dplyr::select(SampleID, Specie, Hours_since_death, Landscape) %>% 
   as_tibble()
 
-# Relative abundance analysis at Phylum level ----
+# Relative abundance analysis at phylum level ----
 
 # Amphisbaena bassleri ----
 
-# Count unique taxa at Phylum level
+# Count unique taxa within each taxonomic level
 
-length(unique(tax_table(Amphisbaena_results)[, "Phylum"]))
+cat("Unique taxa for A. bassleri:", "\n",
+    "Kingdom: ", length(unique(tax_table(Amphisbaena_results)[, "Kingdom"])), "\n",
+    "Phylum: ", length(unique(tax_table(Amphisbaena_results)[, "Phylum"])), "\n",
+    "Class: ", length(unique(tax_table(Amphisbaena_results)[, "Class"])), "\n",
+    "Order: ", length(unique(tax_table(Amphisbaena_results)[, "Order"])), "\n",
+    "Family: ", length(unique(tax_table(Amphisbaena_results)[, "Family"])), "\n",
+    "Genus: ", length(unique(tax_table(Amphisbaena_results)[, "Genus"])), "\n")
 
-# Number of families by Phylum
+# Count the number of families within each phylum
 
-count_families(Amphisbaena_results)
+count_taxlevel(Amphisbaena_results, 
+               HigherTaxLevel = "Phylum",
+               DeeperTaxLevel = "Family")
 
-# Relative abundance at Phylum level
+# Relative abundance at the phylum level
 
 amph_otu_count <- otu_counts(Amphisbaena_results)
 
 amph_taxonomy <- taxonomy(Amphisbaena_results)
 
-amph_otu_rel_abund <- otu_rel_abund(data = data,
-                                    otu = amph_otu_count,
-                                    tax = amph_taxonomy,
-                                    samples = c("SW001", 
-                                                "SW002", 
-                                                "SW003", 
-                                                "SW004"),
-                                    tax_rank = "Phylum")
+amph_phylum_otu_rel_abund <- otu_rel_abund(data = data,
+                                           otu = amph_otu_count,
+                                           tax = amph_taxonomy,
+                                           samples = c("SW001", 
+                                                       "SW002", 
+                                                       "SW003", 
+                                                       "SW004"),
+                                           tax_rank = "Phylum")
 
-amph_tax_pool <- taxon_pool(otu_abund = amph_otu_rel_abund,
-                            cutoff = 3)
+amph_phylum_tax_pool <- taxon_pool(otu_abund = amph_phylum_otu_rel_abund,
+                                   cutoff = 3)
 
-amph_rel_abund <- relative_abundance(rel_abun = amph_otu_rel_abund,
-                                     tax_pool = amph_tax_pool)
+amph_phylum_rel_abund <- relative_abundance(rel_abun = amph_phylum_otu_rel_abund,
+                                            tax_pool = amph_phylum_tax_pool)
 
-# Bar plot of relative abundance
+# Relative abundance at the genus level
+
+amph_genus_otu_rel_abund <- otu_rel_abund(data = data,                                    
+                                          otu = amph_otu_count,
+                                          tax = amph_taxonomy,
+                                          samples = c("SW001", 
+                                                      "SW002", 
+                                                      "SW003", 
+                                                      "SW004"),
+                                          tax_rank = "Genus")
+
+amph_genus_tax_pool <- taxon_pool(otu_abund = amph_genus_otu_rel_abund,
+                                  cutoff = 5)
+
+amph_genus_rel_abund <- relative_abundance(rel_abun = amph_genus_otu_rel_abund,
+                                           tax_pool = amph_genus_tax_pool)
+
+
+# Bar plot of relative abundance at the phylum level
 
 plot_amph_rel_abund_phylum <- 
-  ggplot(amph_rel_abund, 
+  ggplot(amph_phylum_rel_abund, 
          aes(x = SampleID, 
              y = Mean_Rel_Abund, 
              fill = Taxon)) + 
@@ -344,42 +376,75 @@ plot_amph_rel_abund_phylum <-
 
 plot_amph_rel_abund_phylum
 
+# Bar plot of relative abundance at genus level
+
+plot_amph_rel_abund_genus <- 
+  ggplot(amph_genus_rel_abund, 
+         aes(x = SampleID, 
+             y = Mean_Rel_Abund, 
+             fill = Taxon)) + 
+  geom_col(position = "fill", width = 0.8) +
+  labs(fill = "Genus") +
+  xlab("Sample ID") +
+  ylab("Relative Abundance") + 
+  theme_classic2() +
+  rotate_x_text(90) + 
+  scale_y_continuous(expand = c(0,0)) +
+  theme(axis.title.y = element_text(face = "bold"),
+        axis.title.x = element_text(face = "bold"),
+        legend.title = element_text(face = "bold"),
+        legend.text = element_text(face = "italic"),
+        legend.spacing.y = unit(0.3, "cm"),
+        axis.text.x = element_text(face = "bold"),
+        axis.text.y = element_text(face = "bold")) +
+  scale_fill_manual(values = as.vector(cols25(9)))
+
+plot_amph_rel_abund_genus
+
 # Crotophaga ani ----
 
-# Count unique taxa at Phylum level
+# Count unique taxa within each taxonomic level
 
-length(unique(tax_table(Crotophaga_results)[, "Phylum"]))
+cat("Unique taxa for C. ani:", "\n",
+    "Kingdom: ", length(unique(tax_table(Crotophaga_results)[, "Kingdom"])), "\n",
+    "Phylum: ", length(unique(tax_table(Crotophaga_results)[, "Phylum"])), "\n",
+    "Class: ", length(unique(tax_table(Crotophaga_results)[, "Class"])), "\n",
+    "Order: ", length(unique(tax_table(Crotophaga_results)[, "Order"])), "\n",
+    "Family: ", length(unique(tax_table(Crotophaga_results)[, "Family"])), "\n",
+    "Genus: ", length(unique(tax_table(Crotophaga_results)[, "Genus"])), "\n")
 
-# Number of families by Phylum
+# Count the number of families within each phylum
 
-count_families(Crotophaga_results) %>% print(., n = 21)
+count_taxlevel(Crotophaga_results, 
+               HigherTaxLevel = "Phylum",
+               DeeperTaxLevel = "Family") %>% print(., n = 21)
 
-# Relative abundance at Phylum level
+# Relative abundance at the phylum level
 
 crot_otu_count <- otu_counts(Crotophaga_results)
 
 crot_taxonomy <- taxonomy(Crotophaga_results)
 
-crot_otu_rel_abund <- otu_rel_abund(data = data,
-                                    otu = crot_otu_count,
-                                    tax = crot_taxonomy,
-                                    samples = c("SW005", 
-                                                "SW006", 
-                                                "SW007", 
-                                                "SW008",
-                                                "SW009"),
-                                    tax_rank = "Phylum")
+crot_phylum_otu_rel_abund <- otu_rel_abund(data = data,
+                                           otu = crot_otu_count,
+                                           tax = crot_taxonomy,
+                                           samples = c("SW005", 
+                                                       "SW006", 
+                                                       "SW007", 
+                                                       "SW008",
+                                                       "SW009"),
+                                           tax_rank = "Phylum")
 
-crot_tax_pool <- taxon_pool(otu_abund = crot_otu_rel_abund,
-                            cutoff = 3)
+crot_phylum_tax_pool <- taxon_pool(otu_abund = crot_phylum_otu_rel_abund,
+                                   cutoff = 3)
 
-crot_rel_abund <- relative_abundance(rel_abun = crot_otu_rel_abund,
-                                     tax_pool = crot_tax_pool)
+crot_phylum_rel_abund <- relative_abundance(rel_abun = crot_phylum_otu_rel_abund,
+                                     tax_pool = crot_phylum_tax_pool)
 
-# Bar plot of relative abundance
+# Bar plot of relative abundance at the phylum level
 
 plot_crot_rel_abund_phylum <- 
-  ggplot(crot_rel_abund, 
+  ggplot(crot_phylum_rel_abund, 
          aes(x = SampleID, 
              y = Mean_Rel_Abund, 
              fill = Taxon)) + 
@@ -413,11 +478,54 @@ plot_crot_rel_abund_phylum <-
 
 plot_crot_rel_abund_phylum
 
+# Relative abundance at genus level
+
+crot_genus_otu_rel_abund <- otu_rel_abund(data = data,                                    
+                                          otu = crot_otu_count,
+                                          tax = crot_taxonomy,
+                                          samples = c("SW005", 
+                                                      "SW006", 
+                                                      "SW007", 
+                                                      "SW008",
+                                                      "SW009"),
+                                          tax_rank = "Genus")
+
+crot_genus_tax_pool <- taxon_pool(otu_abund = crot_genus_otu_rel_abund,
+                                  cutoff = 5)
+
+crot_genus_rel_abund <- relative_abundance(rel_abun = crot_genus_otu_rel_abund,
+                                           tax_pool = crot_genus_tax_pool)
+
+# Bar plot of relative abundance at genus level
+
+plot_crot_rel_abund_genus <- 
+  ggplot(crot_genus_rel_abund, 
+         aes(x = SampleID, 
+             y = Mean_Rel_Abund, 
+             fill = Taxon)) + 
+  geom_col(position = "fill", width = 0.8) +
+  labs(fill = "Genus") +
+  xlab("Sample ID") +
+  ylab("Relative Abundance") + 
+  theme_classic2() +
+  rotate_x_text(90) + 
+  scale_y_continuous(expand = c(0,0)) +
+  theme(axis.title.y = element_text(face = "bold"),
+        axis.title.x = element_text(face = "bold"),
+        legend.title = element_text(face = "bold"),
+        legend.text = element_text(face = "italic"),
+        legend.spacing.y = unit(0.3, "cm"),
+        axis.text.x = element_text(face = "bold"),
+        axis.text.y = element_text(face = "bold")) +
+  scale_fill_manual(values = as.vector(cols25(16)))
+
+plot_crot_rel_abund_genus
+
 # Alpha diversity ----
 
 # Amphisbaena bassleri ----
 
-# Measures indexes
+# Alpha Diversity Indexes
 
 amph_alpha_div <- estimate_richness(Amphisbaena_results,  
                                     measures = c("Observed",
@@ -481,7 +589,7 @@ plot_amph_rarefaction
 
 # Crotophaga ani ----
 
-# Measures indexes
+# Alpha Diversity Indexes
 
 crot_alpha_div <- estimate_richness(Crotophaga_results,  
                                     measures = c("Observed",
@@ -552,7 +660,7 @@ plot_crot_rarefaction
 
 # Principal Coordinate Analysis (PCoA)
 
-# Normalize the sequencing depth
+# Normalize sequencing depth across samples
 
 set.seed(231206)
 
@@ -560,11 +668,11 @@ amph_rarefied <- rarefy_even_depth(Amphisbaena_results,
                                    sample.size = min(sample_sums(Amphisbaena_results)),
                                    rngseed = TRUE)
 
-# Calculate PCoA with Bray distance
+# Calculate PCoA with Bray-Curtis distance
 
 amph_pcoa <- ordinate(amph_rarefied, method = "PCoA", distance = "bray")
 
-# Ploting PCoA
+# Plotting PCoA
 
 plot_amph_pcoa <- 
   plot_ordination(physeq = amph_rarefied, 
@@ -599,9 +707,9 @@ plot_amph_pcoa <-
 
 plot_amph_pcoa
 
-#Crotophaga ani ----
+# Crotophaga ani ----
 
-# Normalize the sequencing depth
+# Normalize sequencing depth across samples
 
 set.seed(231206)
 
@@ -609,11 +717,11 @@ crot_rarefied <- rarefy_even_depth(Crotophaga_results,
                                    sample.size = min(sample_sums(Crotophaga_results)),
                                    rngseed = TRUE)
 
-# Calculate PCoA with Bray distance
+# Calculate PCoA with Bray-Curtis distance
 
 crot_pcoa <- ordinate(crot_rarefied, method = "PCoA", distance = "bray")
 
-# Ploting PCoA
+# Plotting PCoA
 
 plot_crot_pcoa <- 
   plot_ordination(physeq = crot_rarefied, 
@@ -652,7 +760,7 @@ plot_crot_pcoa <-
 
 plot_crot_pcoa
 
-# Function to prepare data previously to build community matrix ----
+# Function to prepare data for constructing a community matrix ----
 
 preprocess_data <- function(physeq_object, cols_samples_names) {
   
@@ -662,7 +770,7 @@ preprocess_data <- function(physeq_object, cols_samples_names) {
   # Extract raw taxonomy table
   tax_raw <- as.data.frame(tax_table(physeq_object))
   
-  # Join both raw taxonomy and OTU table
+  # Join both raw taxonomy with OTU table
   comm_raw <- cbind(tax_raw, OTU_raw)
   
   # Pivot and normalize data
@@ -676,7 +784,7 @@ preprocess_data <- function(physeq_object, cols_samples_names) {
   return(data_gt)
 }
 
-# Function to build a community matrix ----
+# Function to build a community matrix from OTU and taxonomy data ----
 
 communi_matrix <- function(dat, level_tax, field, tlrn = 1e-5, rt = 1) {
   
@@ -710,7 +818,7 @@ communi_matrix <- function(dat, level_tax, field, tlrn = 1e-5, rt = 1) {
                                             length(community_dt)-1)])))
 }
 
-# Function to convert heatmap object into plot ----
+# Function to convert a heatmap object into a plot ----
 
 heatmap_to_ggplot <- function(heatmap_object) {
   ggplot_new <- grid.grabExpr(draw(heatmap_object)) %>%
@@ -721,11 +829,15 @@ heatmap_to_ggplot <- function(heatmap_object) {
 
 # Amphisbaena bassleri ----
 
+# Prepare data for constructing a community matrix
+
 data_gt_amph <- preprocess_data(physeq_object = Amphisbaena_results,
                                 cols_samples_names = c("SW001", 
                                                        "SW002", 
                                                        "SW003", 
                                                        "SW004"))
+
+# Build a community matrix from OTU and taxonomy data
 
 com_amph_hm <- communi_matrix(dat = data_gt_amph,
                               level_tax = "Family",
@@ -733,29 +845,35 @@ com_amph_hm <- communi_matrix(dat = data_gt_amph,
                               tlrn = 1e-5,
                               rt = 2)
 
-log_sums <- colSums(log(com_amph_hm + 1))
+# Transform the abundances of families to a logarithmic scale
 
 log_sums_amph <- as.data.frame(colSums(log(com_amph_hm + 1))) %>% 
   rename('log(x+1)' = 'colSums(log(com_amph_hm + 1))') %>%
   arrange(desc(`log(x+1)`))
 
+# Obtaining the abundances of the 25 most dominant families
+
 log_sums_amph[25, ]
+
+# Reduce the families to the 25 most dominant
 
 reduced_hm_amph <- log(com_amph_hm + 1)[, colSums(log(com_amph_hm + 1)) > 10.3] %>% 
   t()
+
+# Rename some unclassified and uncultured taxa 
 
 rownames(reduced_hm_amph) <- str_replace_all(rownames(reduced_hm_amph),
                                              c("(.*)_unclassified" = "Unclassified \\1",
                                                "uncultured" = "Uncultured Bacteria",
                                                "_" = " "))
 
-# Heatmap annotation
+# Heatmap annotations
 
-# Extract postmortem hours data
+# Extract data for postmortem hours
 
 postmortem_hours_amph <- sample_data(Amphisbaena_results)$Hours_since_death
 
-# Define colors and legends for postmortem hours data
+# Set up colors and legends for postmortem hours dataset
 
 color_postmortem_amph <- c("0" = "#F6A97A", 
                            "2" = "#D44292", 
@@ -765,16 +883,16 @@ legend_postmortem_amph <- c("0 hours",
                             "2 hours", 
                             "6 hours")
 
-# Extract landscape data
+# Extract data for landscape
 
 landscape_amph <- sample_data(Amphisbaena_results)$Landscape
 
-# Define colors and legends for landscape data
+# Set up colors and legends for landscape dataset
 
 color_landscape_amph <- c("Altered area" = "#FF0000",
                           "Unaltered area" = "#7FFF00")
 
-# Heatmap annotation construction
+# Create annotations for heatmap
 
 hm_annot_amph <- 
   HeatmapAnnotation("Time since death" = postmortem_hours_amph,
@@ -790,7 +908,7 @@ hm_annot_amph <-
                     show_legend = TRUE,
                     annotation_name_side = "right")
 
-# Create heatmap object
+# Create the heatmap object
 
 amph_heatmap <- 
   Heatmap(reduced_hm_amph,
@@ -810,12 +928,12 @@ amph_heatmap <-
           row_dend_side = "left",
           width = unit(35, "mm"))
 
-# Draw heatmap
+# Draw the heatmap
 
 plot_amph_heatmap <- draw(amph_heatmap, 
                           heatmap_legend_side = "bottom")
 
-# Convert heatmap to plot
+# Convert the heatmap object into a plot
 
 plot_amph_heatmap <- heatmap_to_ggplot(plot_amph_heatmap)
 
@@ -823,12 +941,15 @@ plot_amph_heatmap
 
 # Crotophaga ani ----
 
+# Prepare data for constructing a community matrix
+
 data_gt_crot <- preprocess_data(physeq_object = Crotophaga_results,
                                 cols_samples_names = c("SW005", 
                                                        "SW006", 
                                                        "SW007", 
                                                        "SW008", 
                                                        "SW009"))
+# Build a community matrix from OTU and taxonomy data
 
 com_crot_hm <- communi_matrix(dat = data_gt_crot,
                               level_tax = "Family",
@@ -836,29 +957,35 @@ com_crot_hm <- communi_matrix(dat = data_gt_crot,
                               tlrn = 1e-5,
                               rt = 2)
 
-log_sums <- colSums(log(com_crot_hm + 1))
+# Transform the abundances of families to a logarithmic scale
 
 log_sums_crot <- as.data.frame(colSums(log(com_crot_hm + 1))) %>% 
   rename('log(x+1)' = 'colSums(log(com_crot_hm + 1))') %>%
   arrange(desc(`log(x+1)`))
 
+# Obtaining the abundances of the 25 most dominant families
+
 log_sums_crot[25, ]
+
+# Reduce the families to the 25 most dominant
 
 reduced_hm_crot <- log(com_crot_hm + 1)[, colSums(log(com_crot_hm + 1)) > 17.9] %>% 
   t()
+
+# Rename some unclassified and uncultured taxa 
 
 rownames(reduced_hm_crot) <- str_replace_all(rownames(reduced_hm_crot),
                                              c("(.*)_unclassified" = "Unclassified \\1",
                                                "uncultured" = "Uncultured Bacteria",
                                                "_" = " "))
 
-# Heatmap annotation
+# Heatmap annotations
 
-# Extract postmortem hours data
+# Extract data for postmortem hours
 
 postmortem_hours_crot <- sample_data(Crotophaga_results)$Hours_since_death
 
-# Define colors and legends for postmortem data
+# Set up colors and legends for postmortem hours dataset
 
 color_postmortem_crot <- c("1" = "#F66D7A", 
                            "2" = "#D44292", 
@@ -870,16 +997,16 @@ legend_postmortem_crot <- c("1 hours",
                             "6 hours",
                             "48 hours")
 
-# Extract landscape data
+# Extract data for landscape
 
 landscape_crot <- sample_data(Crotophaga_results)$Landscape
 
-# Define colors and legends for landscape data
+# Set up colors and legends for landscape dataset
 
 color_landscape_crot <- c("Altered area" = "#FF0000",
                           "Unaltered area" = "#7FFF00")
 
-# Heatmap aannotation construction
+# Create annotations for heatmap
 
 hm_annot_crot <- 
   HeatmapAnnotation("Time since death" = postmortem_hours_crot,
@@ -895,7 +1022,7 @@ hm_annot_crot <-
                     show_legend = TRUE,
                     annotation_name_side = "right")
 
-# Create heatmap object
+# Create the heatmap object
 
 crot_heatmap <- 
   Heatmap(reduced_hm_crot,
@@ -915,18 +1042,18 @@ crot_heatmap <-
           row_dend_side = "left",
           width = unit(35, "mm"))
 
-# Draw heatmap
+# Draw the heatmap
 
 plot_crot_heatmap <- draw(crot_heatmap, 
                           heatmap_legend_side = "bottom")
 
-# Convert heatmap to plot
+# Convert the heatmap object into a plot
 
 plot_crot_heatmap <- heatmap_to_ggplot(plot_crot_heatmap)
 
 plot_crot_heatmap
 
-# Function filter OTUs based on prevalence and abundance ----
+# Function to filter OTUs based on prevalence and abundance ----
 
 venn_core_microbiota <- function (physeq_object, group_name, abund_value, prev_value) {
   
@@ -954,18 +1081,47 @@ venn_core_microbiota <- function (physeq_object, group_name, abund_value, prev_v
   return(list_core)
 }
 
-# Core Microbiota ----
+# Core Gut Microbiota ----
 
 # Amphisbaena bassleri ----
 
-# Identifying the taxa that composed the core microbiota
+# UpSet plot to visualize shared and unique OTUs across samples
+
+amph_shared_OTU <- merge_samples(Amphisbaena_results, "SampleID", fun = sum)
+
+amph_obj <- as.data.frame(t(otu_table(amph_shared_OTU)))
+
+amph_obj.binary <- sapply(amph_obj, function(x) ifelse(x > 0, 1, 0),
+                          USE.NAMES = T)
+
+rownames(amph_obj.binary) <- rownames(amph_obj)
+
+amph_obj.binary <- as.data.frame(amph_obj.binary)
+
+upset_amph_order <- colnames(amph_obj.binary)
+
+plot_amph_shared_OTU <- upset(amph_obj.binary, 
+                              nsets = 4,       
+                              sets = rev(upset_amph_order),
+                              mainbar.y.label = 'Shared OTUs',
+                              sets.x.label = 'OTUs per sample',
+                              keep.order = T,
+                              order.by = 'freq',
+                              sets.bar.color = c("#00FF00",
+                                                 "#FFFF00",
+                                                 "#FF0000",
+                                                 "#00008B"))
+
+plot_amph_shared_OTU
+
+# Identifying the taxa that compose the core gut microbiota
 
 amph_list_core <- venn_core_microbiota(physeq_object = Amphisbaena_results,
                                        group_name = "SampleID",
                                        abund_value = 0.01/100,
                                        prev_value = 90/100)
 
-# Venn diagram for the core microbiota
+# Venn diagram of the core gut microbiota
 
 plot_amph_core_microbiota <-
   venn.diagram(x = amph_list_core,
@@ -977,8 +1133,8 @@ plot_amph_core_microbiota <-
                         "#00FF00"),
                alpha = 0.5,
                cat.fontface = 2,
-               cex = 1,
-               cat.cex = 1,
+               cex = 0.7,
+               cat.cex = 0.7,
                print.mode = c("raw"),
                fontface = 2)
 
@@ -986,7 +1142,7 @@ plot_amph_core_microbiota <- ggpubr::as_ggplot(plot_amph_core_microbiota)
 
 plot_amph_core_microbiota
 
-# Visualization of the taxa from core microbiota in a data frame
+# Visualization of taxa from the core gut microbiota in a data frame
 
 amph_core_microbiota <- Reduce(intersect, amph_list_core)
 
@@ -998,24 +1154,55 @@ amph_core_microbiota
 
 # Crotophaga ani ----
 
-# Identifying the taxa that composed the core microbiota
+# UpSet plot to visualize shared and unique OTUs across samples
+
+crot_shared_OTU <- merge_samples(Crotophaga_results, "SampleID", fun = sum)
+
+crot_obj <- as.data.frame(t(otu_table(crot_shared_OTU)))
+
+crot_obj.binary <- sapply(crot_obj, function(x) ifelse(x > 0, 1, 0),
+                          USE.NAMES = T)
+
+rownames(crot_obj.binary) <- rownames(crot_obj)
+
+crot_obj.binary <- as.data.frame(crot_obj.binary)
+
+upset_crot_order <- colnames(crot_obj.binary)
+
+plot_crot_shared_OTU <- upset(crot_obj.binary, 
+                              nsets = 5,       
+                              sets = rev(upset_crot_order),
+                              mainbar.y.label = 'Shared OTUs',
+                              sets.x.label = 'OTUs per sample',
+                              keep.order = T,
+                              order.by = 'freq',
+                              sets.bar.color = c("#FF6EB4",
+                                                 "#C0FF3E",
+                                                 "#9AC0CD",
+                                                 "#FFEC8B",
+                                                 "#FFA500")) 
+
+
+plot_crot_shared_OTU
+
+# Identifying the taxa that compose the core gut microbiota
 
 crot_list_core <- venn_core_microbiota(physeq_object = Crotophaga_results,
                                        group_name = "SampleID",
                                        abund_value = 0.01/100,
                                        prev_value = 90/100)
 
-# Venn diagram for core microbiota
+# Venn diagram for the core gut microbiota
 
 plot_crot_core_microbiota <- 
   venn.diagram(x = crot_list_core,
                filename = NULL,
                disable.logging = TRUE,
-               fill = c("#00F5FF", 
-                        "#FF3E96", 
-                        "#FFFF00", 
-                        "#66CD00", 
-                        "#68228B"),
+               fill = c("#FFA500", 
+                        "#FFEC8B", 
+                        "#9AC0CD", 
+                        "#C0FF3E", 
+                        "#FF6EB4"),
                alpha = 0.5,
                cat.fontface = 2,
                cat.just = list(c(NA, 1), 
@@ -1023,8 +1210,8 @@ plot_crot_core_microbiota <-
                                c(1,-0.5), 
                                c(NA, NA), 
                                c(1, -3)),
-               cex = 1,
-               cat.cex = 1,
+               cex = 0.5,
+               cat.cex = 0.5,
                print.mode = c("raw"),
                fontface = 2)
 
@@ -1032,7 +1219,7 @@ plot_crot_core_microbiota <- ggpubr::as_ggplot(plot_crot_core_microbiota)
 
 plot_crot_core_microbiota
 
-# Visualization of the taxa from core microbiota in a data frame
+# Visualization of taxa from the core gut microbiota in a data frame
 
 crot_core_microbiota <- Reduce(intersect, crot_list_core)
 
@@ -1046,94 +1233,121 @@ crot_core_microbiota
 
 # Microbiota composition of A. bassleri
 
-FigureMicroComp_Amph <- grid.arrange(plot_amph_rel_abund_phylum, plot_amph_heatmap,
-                                     widths = c(1, 0.01, 1.5),
-                                     layout_matrix = rbind(c(1, NA, 2)))
+FigMicrobiotaComposition_Amph <- grid.arrange(plot_amph_rel_abund_phylum, plot_amph_heatmap,
+                                              widths = c(1, 0.01, 1.5),
+                                              layout_matrix = rbind(c(1, NA, 2)))
 
-Fig2 <- ggpubr::as_ggplot(FigureMicroComp_Amph) +
+Fig2 <- ggpubr::as_ggplot(FigMicrobiotaComposition_Amph) +
   draw_plot_label(label = LETTERS[1:2],
                   size = 12,
                   x = c(0, 0.4),
-                  y = c(1, 1))
+                  y = c(1, 1)) +  
+  theme(plot.background = element_rect(fill = "white", color = NA),
+        panel.background = element_rect(fill = "white", color = NA))
 
 Fig2
 
 # Microbiota composition of C. ani
 
-FigureMicroComp_Crot <- grid.arrange(plot_crot_rel_abund_phylum, plot_crot_heatmap,
-                                     widths = c(1, 0.01, 1.5),
-                                     layout_matrix = rbind(c(1, NA, 2)))
+FigMicrobiotaComposition_Crot <- grid.arrange(plot_crot_rel_abund_phylum, plot_crot_heatmap,
+                                              widths = c(1, 0.01, 1.5),
+                                              layout_matrix = rbind(c(1, NA, 2)))
 
-Fig3 <- ggpubr::as_ggplot(FigureMicroComp_Crot) +
+Fig4 <- ggpubr::as_ggplot(FigMicrobiotaComposition_Crot) +
   draw_plot_label(label = LETTERS[1:2],
                   size = 12,
                   x = c(0, 0.4),
-                  y = c(1, 1))
+                  y = c(1, 1)) +  
+  theme(plot.background = element_rect(fill = "white", color = NA),
+        panel.background = element_rect(fill = "white", color = NA))
 
-Fig3
-
-# PCoA
-
-FigurePCoA <- grid.arrange(plot_amph_pcoa, plot_crot_pcoa,
-                           widths = c(1, 0.05, 1),
-                           layout_matrix = rbind(c(1, NA, 2)))
-
-Fig4 <- ggpubr::as_ggplot(FigurePCoA) +
-  draw_plot_label(label = LETTERS[1:2],
-                  size = 12,
-                  x = c(0, 0.5),
-                  y = c(1, 1))
 
 Fig4
 
-# Core microbiota
+# PCoA
 
-FigureCoreMicrobiota <- grid.arrange(plot_amph_core_microbiota, plot_crot_core_microbiota,
-                                     widths = c(0.5, 0.05, 0.5),
-                                     layout_matrix = rbind(c(1, NA, 2)))
+FigPCoA <- grid.arrange(plot_amph_pcoa, plot_crot_pcoa,
+                           widths = c(1, 0.05, 1),
+                           layout_matrix = rbind(c(1, NA, 2)))
 
-Fig5 <- ggpubr::as_ggplot(FigureCoreMicrobiota) +
+Fig6 <- ggpubr::as_ggplot(FigPCoA) +
   draw_plot_label(label = LETTERS[1:2],
                   size = 12,
-                  x = c(0, 0.53),
-                  y = c(1, 1))
+                  x = c(0, 0.5),
+                  y = c(1, 1)) +  
+  theme(plot.background = element_rect(fill = "white", color = NA),
+        panel.background = element_rect(fill = "white", color = NA))
 
-Fig5
+
+Fig6
 
 # Save plots ----
 
 # Microbiota composition of Amphisbaena bassleri (Fig2)
 
-ggsave("./Results/Microbiota/Plots/Fig2_MicrobiotaAmph.jpeg", 
+ggsave("./Results/Microbiota/Plots/Fig2_MicrobiotaCompositionAmphisbaena.png", 
        plot = Fig2, 
-       width = 5.75, 
-       height = 3.75, 
-       dpi = 1000, 
-       scale = 1.6)
-
-# Microbiota composition of Crotophaga ani (Fig3)
-
-ggsave("./Results/Microbiota/Plots/Fig3_MicrobiotaCrot.jpeg", 
-       plot = Fig3, 
        width = 5.85, 
        height = 3.75, 
        dpi = 1000, 
        scale = 1.6)
 
-# Beta diversity using PCoA (Fig4)
+# Relative abundance at the genus level of Amphisbaena bassleri (Fig3)
 
-ggsave("./Results/Microbiota/Plots/Fig4_PCoA.jpeg", 
+ggsave("./Results/Microbiota/Plots/Fig3_RelativeAbundanceGenusAmphisbaena.png", 
+       plot = plot_amph_rel_abund_genus, 
+       width = 2, 
+       height = 2, 
+       dpi = 1000, 
+       scale = 2.5)
+
+# Microbiota composition of Crotophaga ani (Fig4)
+
+ggsave("./Results/Microbiota/Plots/Fig4_MicrobiotaCompositionCrotophaga.png", 
        plot = Fig4, 
+       width = 5.85, 
+       height = 3.75, 
+       dpi = 1000, 
+       scale = 1.6)
+
+# Relative abundance at the genus level of Crotophaga ani (Fig5)
+
+ggsave("./Results/Microbiota/Plots/Fig5_RelativeAbundanceGenusAmphisbaena.png", 
+       plot = plot_crot_rel_abund_genus, 
+       width = 2, 
+       height = 2, 
+       dpi = 1000, 
+       scale = 2.5)
+
+# Beta diversity using PCoA (Fig6)
+
+ggsave("./Results/Microbiota/Plots/Fig6_PCoA.png", 
+       plot = Fig6, 
        width = 6, 
        height = 2.5, 
        dpi = 1000, 
        scale = 1.5)
 
-# Core microbiota at Genus level (Fig5)
+# UpSet plot for shared OTUs of Amphisbaena bassleri (7_UpSetPlotAmph)
 
-ggsave("./Results/Microbiota/Plots/Fig5_CoreMicrobiota.jpeg", 
-       plot = Fig5, 
-       width = 3, 
-       height = 1.5, 
-       dpi = 1000, 
-       scale = 3)
+pdf("./Results/Microbiota/Plots/7_UpSetPlotAmph.pdf", width = 5.5, height = 5)
+print(plot_amph_shared_OTU)
+dev.off()
+
+# Venn Diagram for core gut microbiota of Amphisbaena bassleri (7_VennDiagramAmph)
+
+pdf("./Results/Microbiota/Plots/7_VennDiagramAmph.pdf", width = 2.25, height = 1.75)
+print(grid.draw(plot_amph_core_microbiota))
+dev.off()
+
+# UpSet plot for shared OTUs of Crotophaga ani (8_UpSetPlotCrot)
+
+pdf("./Results/Microbiota/Plots/8_UpSetPlotCrot.pdf", width = 5.5, height = 5)
+print(plot_crot_shared_OTU)
+dev.off()
+
+# Venn Diagram for core gut microbiota of Crotophaga ani (8_VennDiagramCrot)
+
+pdf("./Results/Microbiota/Plots/8_VennDiagramCrot.pdf", width = 2.5, height = 2)
+print(grid.draw(plot_crot_core_microbiota))
+dev.off()
