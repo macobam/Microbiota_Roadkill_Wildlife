@@ -1085,35 +1085,6 @@ venn_core_microbiota <- function (physeq_object, group_name, abund_value, prev_v
 
 # Amphisbaena bassleri ----
 
-# UpSet plot to visualize shared and unique OTUs across samples
-
-amph_shared_OTU <- merge_samples(Amphisbaena_results, "SampleID", fun = sum)
-
-amph_obj <- as.data.frame(t(otu_table(amph_shared_OTU)))
-
-amph_obj.binary <- sapply(amph_obj, function(x) ifelse(x > 0, 1, 0),
-                          USE.NAMES = T)
-
-rownames(amph_obj.binary) <- rownames(amph_obj)
-
-amph_obj.binary <- as.data.frame(amph_obj.binary)
-
-upset_amph_order <- colnames(amph_obj.binary)
-
-plot_amph_shared_OTU <- upset(amph_obj.binary, 
-                              nsets = 4,       
-                              sets = rev(upset_amph_order),
-                              mainbar.y.label = 'Shared OTUs',
-                              sets.x.label = 'OTUs per sample',
-                              keep.order = T,
-                              order.by = 'freq',
-                              sets.bar.color = c("#00FF00",
-                                                 "#FFFF00",
-                                                 "#FF0000",
-                                                 "#00008B"))
-
-plot_amph_shared_OTU
-
 # Identifying the taxa that compose the core gut microbiota
 
 amph_list_core <- venn_core_microbiota(physeq_object = Amphisbaena_results,
@@ -1133,8 +1104,8 @@ plot_amph_core_microbiota <-
                         "#00FF00"),
                alpha = 0.5,
                cat.fontface = 2,
-               cex = 0.7,
-               cat.cex = 0.7,
+               cex = 1,
+               cat.cex = 1,
                print.mode = c("raw"),
                fontface = 2)
 
@@ -1153,37 +1124,6 @@ amph_core_microbiota <- amph_taxonomy[amph_taxonomy$OTU %in% amph_core_microbiot
 amph_core_microbiota
 
 # Crotophaga ani ----
-
-# UpSet plot to visualize shared and unique OTUs across samples
-
-crot_shared_OTU <- merge_samples(Crotophaga_results, "SampleID", fun = sum)
-
-crot_obj <- as.data.frame(t(otu_table(crot_shared_OTU)))
-
-crot_obj.binary <- sapply(crot_obj, function(x) ifelse(x > 0, 1, 0),
-                          USE.NAMES = T)
-
-rownames(crot_obj.binary) <- rownames(crot_obj)
-
-crot_obj.binary <- as.data.frame(crot_obj.binary)
-
-upset_crot_order <- colnames(crot_obj.binary)
-
-plot_crot_shared_OTU <- upset(crot_obj.binary, 
-                              nsets = 5,       
-                              sets = rev(upset_crot_order),
-                              mainbar.y.label = 'Shared OTUs',
-                              sets.x.label = 'OTUs per sample',
-                              keep.order = T,
-                              order.by = 'freq',
-                              sets.bar.color = c("#FF6EB4",
-                                                 "#C0FF3E",
-                                                 "#9AC0CD",
-                                                 "#FFEC8B",
-                                                 "#FFA500")) 
-
-
-plot_crot_shared_OTU
 
 # Identifying the taxa that compose the core gut microbiota
 
@@ -1210,8 +1150,8 @@ plot_crot_core_microbiota <-
                                c(1,-0.5), 
                                c(NA, NA), 
                                c(1, -3)),
-               cex = 0.5,
-               cat.cex = 0.5,
+               cex = 1,
+               cat.cex = 1,
                print.mode = c("raw"),
                fontface = 2)
 
@@ -1253,7 +1193,7 @@ FigMicrobiotaComposition_Crot <- grid.arrange(plot_crot_rel_abund_phylum, plot_c
                                               widths = c(1, 0.01, 1.5),
                                               layout_matrix = rbind(c(1, NA, 2)))
 
-Fig4 <- ggpubr::as_ggplot(FigMicrobiotaComposition_Crot) +
+Fig3 <- ggpubr::as_ggplot(FigMicrobiotaComposition_Crot) +
   draw_plot_label(label = LETTERS[1:2],
                   size = 12,
                   x = c(0, 0.4),
@@ -1262,7 +1202,7 @@ Fig4 <- ggpubr::as_ggplot(FigMicrobiotaComposition_Crot) +
         panel.background = element_rect(fill = "white", color = NA))
 
 
-Fig4
+Fig3
 
 # PCoA
 
@@ -1270,7 +1210,7 @@ FigPCoA <- grid.arrange(plot_amph_pcoa, plot_crot_pcoa,
                            widths = c(1, 0.05, 1),
                            layout_matrix = rbind(c(1, NA, 2)))
 
-Fig6 <- ggpubr::as_ggplot(FigPCoA) +
+Fig4 <- ggpubr::as_ggplot(FigPCoA) +
   draw_plot_label(label = LETTERS[1:2],
                   size = 12,
                   x = c(0, 0.5),
@@ -1279,7 +1219,24 @@ Fig6 <- ggpubr::as_ggplot(FigPCoA) +
         panel.background = element_rect(fill = "white", color = NA))
 
 
-Fig6
+Fig4
+
+# Core Gut Microbiota
+
+FigCoreGut <- grid.arrange(plot_amph_core_microbiota, plot_crot_core_microbiota,
+                           widths = c(1, 0.05, 1),
+                           layout_matrix = rbind(c(1, NA, 2)))
+
+Fig5 <- ggpubr::as_ggplot(FigCoreGut) +
+  draw_plot_label(label = LETTERS[1:2],
+                  size = 12,
+                  x = c(0, 0.5),
+                  y = c(1, 1)) +  
+  theme(plot.background = element_rect(fill = "white", color = NA),
+        panel.background = element_rect(fill = "white", color = NA))
+
+
+Fig5
 
 # Save plots ----
 
@@ -1292,62 +1249,29 @@ ggsave("./Results/Microbiota/Plots/Fig2_MicrobiotaCompositionAmphisbaena.png",
        dpi = 1000, 
        scale = 1.6)
 
-# Relative abundance at the genus level of Amphisbaena bassleri (Fig3)
+# Microbiota composition of Crotophaga ani (Fig3)
 
-ggsave("./Results/Microbiota/Plots/Fig3_RelativeAbundanceGenusAmphisbaena.png", 
-       plot = plot_amph_rel_abund_genus, 
-       width = 2, 
-       height = 2, 
-       dpi = 1000, 
-       scale = 2.5)
-
-# Microbiota composition of Crotophaga ani (Fig4)
-
-ggsave("./Results/Microbiota/Plots/Fig4_MicrobiotaCompositionCrotophaga.png", 
-       plot = Fig4, 
+ggsave("./Results/Microbiota/Plots/Fig3_MicrobiotaCompositionCrotophaga.png", 
+       plot = Fig3, 
        width = 5.85, 
        height = 3.75, 
        dpi = 1000, 
        scale = 1.6)
 
-# Relative abundance at the genus level of Crotophaga ani (Fig5)
+# Beta diversity using PCoA (Fig4)
 
-ggsave("./Results/Microbiota/Plots/Fig5_RelativeAbundanceGenusAmphisbaena.png", 
-       plot = plot_crot_rel_abund_genus, 
-       width = 2, 
-       height = 2, 
-       dpi = 1000, 
-       scale = 2.5)
-
-# Beta diversity using PCoA (Fig6)
-
-ggsave("./Results/Microbiota/Plots/Fig6_PCoA.png", 
-       plot = Fig6, 
+ggsave("./Results/Microbiota/Plots/Fig4_PCoA.png", 
+       plot = Fig4, 
        width = 6, 
        height = 2.5, 
        dpi = 1000, 
        scale = 1.5)
 
-# UpSet plot for shared OTUs of Amphisbaena bassleri (7_UpSetPlotAmph)
+# Core gut microbiota using venn diagrams for A. bassleri and C. ani
 
-pdf("./Results/Microbiota/Plots/7_UpSetPlotAmph.pdf", width = 5.5, height = 5)
-print(plot_amph_shared_OTU)
-dev.off()
-
-# Venn Diagram for core gut microbiota of Amphisbaena bassleri (7_VennDiagramAmph)
-
-pdf("./Results/Microbiota/Plots/7_VennDiagramAmph.pdf", width = 2.25, height = 1.75)
-print(grid.draw(plot_amph_core_microbiota))
-dev.off()
-
-# UpSet plot for shared OTUs of Crotophaga ani (8_UpSetPlotCrot)
-
-pdf("./Results/Microbiota/Plots/8_UpSetPlotCrot.pdf", width = 5.5, height = 5)
-print(plot_crot_shared_OTU)
-dev.off()
-
-# Venn Diagram for core gut microbiota of Crotophaga ani (8_VennDiagramCrot)
-
-pdf("./Results/Microbiota/Plots/8_VennDiagramCrot.pdf", width = 2.5, height = 2)
-print(grid.draw(plot_crot_core_microbiota))
-dev.off()
+ggsave("./Results/Microbiota/Plots/Fig5_CoreGutMicrobiota.png", 
+       plot = Fig5, 
+       width = 3, 
+       height = 1.5, 
+       dpi = 1000, 
+       scale = 3)
