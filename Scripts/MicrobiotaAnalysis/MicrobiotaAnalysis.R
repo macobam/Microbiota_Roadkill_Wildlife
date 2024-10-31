@@ -321,24 +321,6 @@ amph_phylum_tax_pool <- taxon_pool(otu_abund = amph_phylum_otu_rel_abund,
 amph_phylum_rel_abund <- relative_abundance(rel_abun = amph_phylum_otu_rel_abund,
                                             tax_pool = amph_phylum_tax_pool)
 
-# Relative abundance at the genus level
-
-amph_genus_otu_rel_abund <- otu_rel_abund(data = data,                                    
-                                          otu = amph_otu_count,
-                                          tax = amph_taxonomy,
-                                          samples = c("SW001", 
-                                                      "SW002", 
-                                                      "SW003", 
-                                                      "SW004"),
-                                          tax_rank = "Genus")
-
-amph_genus_tax_pool <- taxon_pool(otu_abund = amph_genus_otu_rel_abund,
-                                  cutoff = 5)
-
-amph_genus_rel_abund <- relative_abundance(rel_abun = amph_genus_otu_rel_abund,
-                                           tax_pool = amph_genus_tax_pool)
-
-
 # Bar plot of relative abundance at the phylum level
 
 plot_amph_rel_abund_phylum <- 
@@ -373,31 +355,6 @@ plot_amph_rel_abund_phylum <-
                                "#B5B5B5"))
 
 plot_amph_rel_abund_phylum
-
-# Bar plot of relative abundance at genus level
-
-plot_amph_rel_abund_genus <- 
-  ggplot(amph_genus_rel_abund, 
-         aes(x = SampleID, 
-             y = Mean_Rel_Abund, 
-             fill = Taxon)) + 
-  geom_col(position = "fill", width = 0.8) +
-  labs(fill = "Genus") +
-  xlab("Sample ID") +
-  ylab("Relative Abundance") + 
-  theme_classic2() +
-  rotate_x_text(90) + 
-  scale_y_continuous(expand = c(0,0)) +
-  theme(axis.title.y = element_text(face = "bold"),
-        axis.title.x = element_text(face = "bold"),
-        legend.title = element_text(face = "bold"),
-        legend.text = element_text(face = "italic"),
-        legend.spacing.y = unit(0.3, "cm"),
-        axis.text.x = element_text(face = "bold"),
-        axis.text.y = element_text(face = "bold")) +
-  scale_fill_manual(values = as.vector(cols25(9)))
-
-plot_amph_rel_abund_genus
 
 # Crotophaga ani ----
 
@@ -475,49 +432,6 @@ plot_crot_rel_abund_phylum <-
                                "#B5B5B5"))
 
 plot_crot_rel_abund_phylum
-
-# Relative abundance at genus level
-
-crot_genus_otu_rel_abund <- otu_rel_abund(data = data,                                    
-                                          otu = crot_otu_count,
-                                          tax = crot_taxonomy,
-                                          samples = c("SW005", 
-                                                      "SW006", 
-                                                      "SW007", 
-                                                      "SW008",
-                                                      "SW009"),
-                                          tax_rank = "Genus")
-
-crot_genus_tax_pool <- taxon_pool(otu_abund = crot_genus_otu_rel_abund,
-                                  cutoff = 5)
-
-crot_genus_rel_abund <- relative_abundance(rel_abun = crot_genus_otu_rel_abund,
-                                           tax_pool = crot_genus_tax_pool)
-
-# Bar plot of relative abundance at genus level
-
-plot_crot_rel_abund_genus <- 
-  ggplot(crot_genus_rel_abund, 
-         aes(x = SampleID, 
-             y = Mean_Rel_Abund, 
-             fill = Taxon)) + 
-  geom_col(position = "fill", width = 0.8) +
-  labs(fill = "Genus") +
-  xlab("Sample ID") +
-  ylab("Relative Abundance") + 
-  theme_classic2() +
-  rotate_x_text(90) + 
-  scale_y_continuous(expand = c(0,0)) +
-  theme(axis.title.y = element_text(face = "bold"),
-        axis.title.x = element_text(face = "bold"),
-        legend.title = element_text(face = "bold"),
-        legend.text = element_text(face = "italic"),
-        legend.spacing.y = unit(0.3, "cm"),
-        axis.text.x = element_text(face = "bold"),
-        axis.text.y = element_text(face = "bold")) +
-  scale_fill_manual(values = as.vector(cols25(16)))
-
-plot_crot_rel_abund_genus
 
 # Alpha diversity ----
 
@@ -1175,7 +1089,7 @@ FigMicrobiotaComposition_Amph <- grid.arrange(plot_amph_rel_abund_phylum, plot_a
                                               widths = c(1, 0.01, 1.5),
                                               layout_matrix = rbind(c(1, NA, 2)))
 
-Fig2 <- ggpubr::as_ggplot(FigMicrobiotaComposition_Amph) +
+Fig1 <- ggpubr::as_ggplot(FigMicrobiotaComposition_Amph) +
   draw_plot_label(label = LETTERS[1:2],
                   size = 12,
                   x = c(0, 0.4),
@@ -1183,7 +1097,7 @@ Fig2 <- ggpubr::as_ggplot(FigMicrobiotaComposition_Amph) +
   theme(plot.background = element_rect(fill = "white", color = NA),
         panel.background = element_rect(fill = "white", color = NA))
 
-Fig2
+Fig1
 
 # Microbiota composition of C. ani
 
@@ -1191,7 +1105,7 @@ FigMicrobiotaComposition_Crot <- grid.arrange(plot_crot_rel_abund_phylum, plot_c
                                               widths = c(1, 0.01, 1.5),
                                               layout_matrix = rbind(c(1, NA, 2)))
 
-Fig3 <- ggpubr::as_ggplot(FigMicrobiotaComposition_Crot) +
+Fig2 <- ggpubr::as_ggplot(FigMicrobiotaComposition_Crot) +
   draw_plot_label(label = LETTERS[1:2],
                   size = 12,
                   x = c(0, 0.4),
@@ -1200,7 +1114,7 @@ Fig3 <- ggpubr::as_ggplot(FigMicrobiotaComposition_Crot) +
         panel.background = element_rect(fill = "white", color = NA))
 
 
-Fig3
+Fig2
 
 # PCoA
 
@@ -1208,7 +1122,24 @@ FigPCoA <- grid.arrange(plot_amph_pcoa, plot_crot_pcoa,
                            widths = c(1, 0.05, 1),
                            layout_matrix = rbind(c(1, NA, 2)))
 
-Fig4 <- ggpubr::as_ggplot(FigPCoA) +
+Fig3 <- ggpubr::as_ggplot(FigPCoA) +
+  draw_plot_label(label = LETTERS[1:2],
+                  size = 12,
+                  x = c(0, 0.5),
+                  y = c(1, 1)) +  
+  theme(plot.background = element_rect(fill = "white", color = NA),
+        panel.background = element_rect(fill = "white", color = NA))
+
+
+Fig3
+
+# Core Gut Microbiota
+
+FigCoreGut <- grid.arrange(plot_amph_core_microbiota, plot_crot_core_microbiota,
+                           widths = c(1, 0.05, 1),
+                           layout_matrix = rbind(c(1, NA, 2)))
+
+Fig4 <- ggpubr::as_ggplot(FigCoreGut) +
   draw_plot_label(label = LETTERS[1:2],
                   size = 12,
                   x = c(0, 0.5),
@@ -1219,29 +1150,12 @@ Fig4 <- ggpubr::as_ggplot(FigPCoA) +
 
 Fig4
 
-# Core Gut Microbiota
-
-FigCoreGut <- grid.arrange(plot_amph_core_microbiota, plot_crot_core_microbiota,
-                           widths = c(1, 0.05, 1),
-                           layout_matrix = rbind(c(1, NA, 2)))
-
-Fig5 <- ggpubr::as_ggplot(FigCoreGut) +
-  draw_plot_label(label = LETTERS[1:2],
-                  size = 12,
-                  x = c(0, 0.5),
-                  y = c(1, 1)) +  
-  theme(plot.background = element_rect(fill = "white", color = NA),
-        panel.background = element_rect(fill = "white", color = NA))
-
-
-Fig5
-
 # Save plots ----
 
 # Microbiota composition of Amphisbaena bassleri (Fig2)
 
-ggsave("./Results/Microbiota/Plots/Fig2_MicrobiotaCompositionAmphisbaena.png", 
-       plot = Fig2, 
+ggsave("./Results/Microbiota/Plots/Fig1_MicrobiotaCompositionAmphisbaena.png", 
+       plot = Fig1, 
        width = 5.85, 
        height = 3.75, 
        dpi = 1000, 
@@ -1249,8 +1163,8 @@ ggsave("./Results/Microbiota/Plots/Fig2_MicrobiotaCompositionAmphisbaena.png",
 
 # Microbiota composition of Crotophaga ani (Fig3)
 
-ggsave("./Results/Microbiota/Plots/Fig3_MicrobiotaCompositionCrotophaga.png", 
-       plot = Fig3, 
+ggsave("./Results/Microbiota/Plots/Fig2_MicrobiotaCompositionCrotophaga.png", 
+       plot = Fig2, 
        width = 5.85, 
        height = 3.75, 
        dpi = 1000, 
@@ -1258,8 +1172,8 @@ ggsave("./Results/Microbiota/Plots/Fig3_MicrobiotaCompositionCrotophaga.png",
 
 # Beta diversity using PCoA (Fig4)
 
-ggsave("./Results/Microbiota/Plots/Fig4_PCoA.png", 
-       plot = Fig4, 
+ggsave("./Results/Microbiota/Plots/Fig3_PCoA.png", 
+       plot = Fig3, 
        width = 6, 
        height = 2.5, 
        dpi = 1000, 
@@ -1267,8 +1181,8 @@ ggsave("./Results/Microbiota/Plots/Fig4_PCoA.png",
 
 # Core gut microbiota using venn diagrams for A. bassleri and C. ani
 
-ggsave("./Results/Microbiota/Plots/Fig5_CoreGutMicrobiota.png", 
-       plot = Fig5, 
+ggsave("./Results/Microbiota/Plots/Fig4_CoreGutMicrobiota.png", 
+       plot = Fig4, 
        width = 3, 
        height = 1.5, 
        dpi = 1000, 
