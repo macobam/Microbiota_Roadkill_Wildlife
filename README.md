@@ -1,10 +1,17 @@
-### This repository describes the necessary steps to analyze metabarcoding data from gut samples of roadkill wildlife in the Tropical Andes, specifically focusing on the species *Amphisbaena bassleri* and *Crotophaga ani*. The data was obtained through Illumina sequencing targeting the V3-V4 region of the 16S rRNA gene.
+[![Workflow](https://img.shields.io/badge/Tool-Mothur-yellow?logo=data)](https://mothur.org/wiki/miseq_sop/)
+![Analyzed by R](https://img.shields.io/badge/Analyzed%20by-R-blue?logo=r)
+![Analyzed by Bash](https://img.shields.io/badge/Shell-Bash-lightgrey?logo=gnu-bash)
+![License: CC BY 4.0](https://img.shields.io/badge/License-CC--BY%204.0-lightblue.svg)
+
+# Wildlife Microbiota Roadkill Analysis
+
+### This repository describes the necessary steps to analyze metabarcoding data from gut samples of roadkill wildlife in the Tropical Andes, specifically focusing on the species *Amphisbaena bassleri* and *Crotophaga ani*. The data was obtained through Illumina sequencing targeting the V<sub>3</sub> - V<sub>4</sub> region of the 16S rRNA gene.
 
 ---
 
 ## Considerations
 
-* ***Note 1:*** The necessary FastQ files for this project should be placed within the `Data/` directory. You can download the FastQ files for this study from the Sequence Read Archive (SRA) under accession number **PRJNA1061813**.
+* ***Note 1:*** The necessary FastQ files for this project should be placed within the `Data/` directory. You can download the FastQ files for this study from the Sequence Read Archive (SRA) under accession number [**PRJNA1061813**](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA1061813/).
 * ***Note 2:*** All scripts are located within `Scripts/`.
 * ***Note 3:*** Verify and adjust the paths as needed for the environment variables according to your own directories for both batch files inside `Scripts/MothurBatchFiles/`.
 * ***Note 4:*** To ensure the correct execution of all scripts, it is necessary to have the following programs installed:
@@ -61,3 +68,9 @@ This generates multiple files in the `Results/Mothur/Analysis/` folder. However,
 This final step requires Rstudio to analyze the results obtained from mothur. In `Scripts/MicrobiotaAnalysis/`, the script `MicrobiotaAnalysis.R` examines, for each species and sample: community composition, alpha diversity, beta diversity, and the core microbiota.
 
 The main results are in `Results/Microbiota/Plots/`. Additionally, `Results/Microbiota/RData/` stores the data sets used, which can be imported into Rstudio using the `load("file_name.RData")` function.
+
+## Citation
+
+Please cite our paper if you find it useful for your work.
+
+Coba-Males, M.A., Díaz M., Molina C.A., Medrano-Vizcaíno P., Brito-Zapata D., Martin-Solano S., Ocaña-Mayorga, S., Carrillo-Bilbao, G. A., Narváez, W., Arrivillaga-Henríquez, J., González-Suárez, M., Enríquez, S. , & Poveda, A. (2024) Gut bacterial communities in roadkill animals: A pioneering study of two species in the Amazon region in Ecuador. *PLoS ONE 19*(12): e0313263. [DOI: 10.1371/journal.pone.0313263](https://doi.org/10.1371/journal.pone.0313263)
